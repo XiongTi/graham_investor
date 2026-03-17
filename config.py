@@ -20,28 +20,77 @@ GRAHAM_CRITERIA = {
 
     # 分红记录
     "min_dividend_years": 5,      # 至少连续5年分红 (Graham原书要求20年)
+
+    # 营收增长
+    "revenue_growth_min": 0.10,   # 营收增长至少 10%
+
+    # 质量因子（巴菲特标准）
+    "roe_excellent": 0.20,        # ROE ≥ 20% 为优秀
+    "roe_good": 0.15,             # ROE ≥ 15% 为良好
+    "net_margin_excellent": 0.20, # 净利润率 ≥ 20% 为优秀
+    "net_margin_good": 0.10,      # 净利润率 ≥ 10% 为良好
+    "fcf_yield_good": 0.05,       # 自由现金流收益率 ≥ 5% 为良好
 }
 
 # ============================================================
-# 评分权重
+# 评分权重（合计 100%）
+# 估值 30% + 财务 15% + 成长稳定 28% + 质量 27%
 # ============================================================
 
 SCORE_WEIGHTS = {
-    "pe_score": 0.20,             # P/E 评分权重
-    "pb_score": 0.15,             # P/B 评分权重
-    "graham_number_score": 0.20,  # Graham Number 安全边际权重
-    "current_ratio_score": 0.10,  # 流动比率权重
-    "debt_equity_score": 0.10,    # 债务权益比权重
-    "earnings_stability": 0.10,   # 盈利稳定性权重
-    "dividend_score": 0.05,       # 分红持续性权重
-    "earnings_growth_score": 0.10,# 盈利增长权重
+    # 估值（30%，从原 42% 压缩）
+    "pe_score": 0.10,
+    "pb_score": 0.08,
+    "graham_number_score": 0.12,
+    # 财务健康（15%）
+    "current_ratio_score": 0.08,
+    "debt_equity_score": 0.07,
+    # 成长与稳定（28%）
+    "earnings_stability": 0.08,
+    "dividend_score": 0.04,
+    "earnings_growth_score": 0.08,
+    "revenue_growth_score": 0.08,
+    # 质量因子（27%，新增）
+    "roe_score": 0.12,
+    "net_margin_score": 0.08,
+    "fcf_yield_score": 0.07,
 }
 
 # ============================================================
-# 默认股票池 - 可替换为自定义列表
+# 盈利负增长惩罚系数
+# 盈利衰退时对总分施加乘数惩罚，防止"便宜但衰退"的股票拿高分
 # ============================================================
 
-DEFAULT_WATCHLIST = [
+EARNINGS_DECLINE_PENALTY = {
+    "mild": (-0.10, 0.80),    # 负增长 0~10%: 总分 × 0.80
+    "moderate": (-0.30, 0.60),# 负增长 10~30%: 总分 × 0.60
+    "severe": (None, 0.45),   # 负增长 >30%: 总分 × 0.45
+}
+
+# ============================================================
+# 自动发现 - 预筛选参数（宽松标准，用于批量粗筛）
+# ============================================================
+
+SCREENER_CONFIG = {
+    # 交易所（NMS=NASDAQ, NYQ=NYSE）
+    "exchanges": ["NMS", "NYQ"],
+    # 市值下限（美元），过滤微型股，默认 10 亿
+    "min_market_cap": 1_000_000_000,
+    # 3个月日均成交量下限，确保流动性
+    "min_avg_volume": 300_000,
+    # 预筛 P/E 上限（接近 Graham 标准）
+    "pre_screen_pe_max": 18,
+    # 预筛 P/B 上限
+    "pre_screen_pb_max": 2.0,
+    # 最大候选数量
+    "max_candidates": 200,
+}
+
+# ============================================================
+# 备用股票池 - 当自动发现不可用时的回退列表
+# ============================================================
+
+FALLBACK_WATCHLIST = [
     # 大盘蓝筹
     "AAPL", "MSFT", "GOOGL", "JNJ", "PG", "KO", "PEP",
     "WMT", "JPM", "BAC", "XOM", "CVX", "UNH", "HD",

@@ -90,7 +90,7 @@ def _to_iso(value: pd.Timestamp | None) -> str:
     return value.date().isoformat()
 
 
-def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date, capital_usd: float, prev_portfolio: dict | None = None) -> tuple[list[dict], dict]:
+def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date, capital_usd: float, prev_portfolio: dict | None = None, prev_positions: dict | None = None) -> tuple[list[dict], dict]:
     allocation = capital_usd / len(tickers)
     position_rows: list[dict] = []
     portfolio_day_start = 0.0
@@ -107,7 +107,17 @@ def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date,
         current_value = shares * latest_price if latest_price else 0.0
         previous_value = shares * prev_price if prev_price else current_value
         day_pnl = current_value - previous_value
-        total_pnl = current_value - cost_basis
+        
+        # 计算每只股票的累计盈亏
+        position_key = (group_name, ticker)
+        prev_position = prev_positions.get(position_key) if prev_positions else None
+        if prev_position is not None:
+            prev_total_pnl = prev_position.get("total_pnl_usd", 0.0) or 0.0
+            cumulative_pnl = prev_total_pnl + day_pnl
+        else:
+            cumulative_pnl = day_pnl  # 第一天就是当天的盈亏
+        
+        total_pnl = cumulative_pnl
         day_return_pct = (day_pnl / previous_value * 100) if previous_value else 0.0
         total_return_pct = (total_pnl / cost_basis * 100) if cost_basis else 0.0
 
@@ -211,14 +221,25 @@ def run_monitor(as_of_date: date, capital_usd: float) -> None:
     # 读取前一天的数据用于计算累计盈亏
     prev_day = as_of_date - timedelta(days=1)
     prev_portfolios = {}
+    prev_positions = {}
     if PORTFOLIOS_CSV.exists():
         prev_df = pd.read_csv(PORTFOLIOS_CSV)
         prev_day_df = prev_df[prev_df["observation_date"] == prev_day.isoformat()]
         for _, row in prev_day_df.iterrows():
             prev_portfolios[row["group_name"]] = row
+    
+    if POSITIONS_CSV.exists():
+        prev_pos_df = pd.read_csv(POSITIONS_CSV)
+        prev_pos_day_df = prev_pos_df[prev_pos_df["observation_date"] == prev_day.isoformat()]
+        for _, row in prev_pos_day_df.iterrows():
+            key = (row["group_name"], row["ticker"])
+            prev_positions[key] = row
 
     for group_name, tickers in PORTFOLIO_GROUPS.items():
-        positions, portfolio = _build_group_snapshot(group_name, tickers, as_of_date, capital_usd, prev_portfolios.get(group_name))
+        positions, portfolio = _build_group_snapshot(
+            group_name, tickers, as_of_date, capital_usd, 
+            prev_portfolios.get(group_name), prev_positions
+        )
         all_positions.extend(positions)
         all_portfolios.append(portfolio)
 

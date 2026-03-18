@@ -63,6 +63,26 @@ python -m graham_investor.model --watchlist
 python -m graham_investor.model AAPL MSFT GOOGL BRK-B
 ```
 
+## 长期观测实验
+
+从 `2026-03-18` 建仓日起，跟踪两组固定组合（各 `30000 USD`，等权买入）的每日表现：
+
+```bash
+python -m graham_investor.monitor
+```
+
+指定观测日期：
+
+```bash
+python -m graham_investor.monitor --date 2026-03-18
+```
+
+脚本会：
+
+- 在终端打印每组组合与每只股票的当日收益、累计收益
+- 追加或更新 `data/daily_positions.csv`
+- 追加或更新 `data/daily_portfolios.csv`
+
 ## 预筛选参数
 
 在 `config.py` 的 `SCREENER_CONFIG` 中可调整自动发现的粗筛标准：

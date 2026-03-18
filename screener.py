@@ -3,6 +3,7 @@
 
 策略：
 1. 用 yf.screen() 按 Graham 宽松标准做粗筛（单次 API 调用，无需逐只查询）
+2. 预筛只做“价值 + 基础质量”过滤，重点保证召回率，避免过早淘汰潜在高分股
 2. 返回候选 ticker 列表，交给 model.py 做精细评分
 """
 
@@ -28,6 +29,9 @@ def _build_graham_query() -> EquityQuery:
         EquityQuery("lt", ["peratio.lasttwelvemonths", cfg["pre_screen_pe_max"]]),
         # P/B < 宽松上限
         EquityQuery("lt", ["pricebookratio.quarterly", cfg["pre_screen_pb_max"]]),
+        # 质量过滤（宽松）：至少要求资本回报和净利率为正
+        EquityQuery("gt", ["returnonequity.lasttwelvemonths", cfg["pre_screen_roe_min"]]),
+        EquityQuery("gt", ["netincomemargin.lasttwelvemonths", cfg["pre_screen_net_margin_min"]]),
     ]
 
     return EquityQuery("and", filters)

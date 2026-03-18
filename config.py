@@ -82,6 +82,10 @@ SCREENER_CONFIG = {
     "pre_screen_pe_max": 18,
     # 预筛 P/B 上限
     "pre_screen_pb_max": 2.0,
+    # 预筛 ROE 下限（宽松），至少要求资本回报为正
+    "pre_screen_roe_min": 0.01,
+    # 预筛净利率下限（宽松），至少要求主营业务整体盈利
+    "pre_screen_net_margin_min": 0.01,
     # 最大候选数量
     "max_candidates": 200,
 }

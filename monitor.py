@@ -90,7 +90,7 @@ def _to_iso(value: pd.Timestamp | None) -> str:
     return value.date().isoformat()
 
 
-def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date, capital_usd: float) -> tuple[list[dict], dict]:
+def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date, capital_usd: float, prev_portfolio: dict | None = None) -> tuple[list[dict], dict]:
     allocation = capital_usd / len(tickers)
     position_rows: list[dict] = []
     portfolio_day_start = 0.0
@@ -145,9 +145,19 @@ def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date,
         "current_value_usd": round(portfolio_day_end, 2),
         "day_pnl_usd": round(portfolio_day_end - portfolio_day_start, 2),
         "day_return_pct": round(((portfolio_day_end - portfolio_day_start) / portfolio_day_start * 100) if portfolio_day_start else 0.0, 2),
-        "total_pnl_usd": round(portfolio_day_end - portfolio_cost, 2),
-        "total_return_pct": round(((portfolio_day_end - portfolio_cost) / portfolio_cost * 100) if portfolio_cost else 0.0, 2),
     }
+
+    # 计算累计盈亏
+    day_pnl = portfolio_day_end - portfolio_day_start
+    if prev_portfolio is not None:
+        prev_total_pnl = prev_portfolio.get("total_pnl_usd", 0.0) or 0.0
+        cumulative_pnl = prev_total_pnl + day_pnl
+    else:
+        cumulative_pnl = day_pnl  # 第一天就是当天的盈亏
+    
+    portfolio_row["total_pnl_usd"] = round(cumulative_pnl, 2)
+    portfolio_row["total_return_pct"] = round((cumulative_pnl / capital_usd * 100) if capital_usd else 0.0, 2)
+
     return position_rows, portfolio_row
 
 
@@ -198,8 +208,17 @@ def run_monitor(as_of_date: date, capital_usd: float) -> None:
     all_positions: list[dict] = []
     all_portfolios: list[dict] = []
 
+    # 读取前一天的数据用于计算累计盈亏
+    prev_day = as_of_date - timedelta(days=1)
+    prev_portfolios = {}
+    if PORTFOLIOS_CSV.exists():
+        prev_df = pd.read_csv(PORTFOLIOS_CSV)
+        prev_day_df = prev_df[prev_df["observation_date"] == prev_day.isoformat()]
+        for _, row in prev_day_df.iterrows():
+            prev_portfolios[row["group_name"]] = row
+
     for group_name, tickers in PORTFOLIO_GROUPS.items():
-        positions, portfolio = _build_group_snapshot(group_name, tickers, as_of_date, capital_usd)
+        positions, portfolio = _build_group_snapshot(group_name, tickers, as_of_date, capital_usd, prev_portfolios.get(group_name))
         all_positions.extend(positions)
         all_portfolios.append(portfolio)
 

@@ -11,9 +11,13 @@ from __future__ import annotations
 import argparse
 from datetime import date, datetime, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import yfinance as yf
+
+# 常量
+MAX_LOOKBACK_DAYS = 10  # 最多回溯天数找交易日
 
 
 PORTFOLIO_GROUPS = {
@@ -62,7 +66,7 @@ def _is_us_market_holiday(check_date: date) -> bool:
 def _get_latest_trading_day(as_of_date: date) -> date:
     """获取指定日期之前的最后一个美股交易日"""
     check_date = as_of_date
-    for _ in range(10):  # 最多回溯10天
+    for _ in range(MAX_LOOKBACK_DAYS):
         if not _is_us_market_holiday(check_date):
             return check_date
         check_date -= timedelta(days=1)
@@ -250,13 +254,9 @@ def _print_report(portfolio_rows: list[dict], position_rows: list[dict]) -> None
 
 
 def run_monitor(as_of_date: date, capital_usd: float) -> None:
-    # 北京时间 9 AM = 美国时间前一天的 8 PM (夏令时为 9 PM)
-    # 检查这个美国时间是否为周末或节假日
-    from datetime import timezone
-    
-    # 将北京时间转换为美国东部时间
-    beijing_tz = timezone(timedelta(hours=8))
-    us_tz = timezone(timedelta(hours=-5))  # EST
+    # 使用 ZoneInfo 自动处理夏令时
+    beijing_tz = ZoneInfo("Asia/Shanghai")
+    us_tz = ZoneInfo("America/New_York")
     
     # 北京时间 9 点对应的时间
     beijing_now = datetime.now(beijing_tz)
@@ -279,17 +279,14 @@ def run_monitor(as_of_date: date, capital_usd: float) -> None:
         # 用美国日期作为数据日期
         as_of_date = us_date
     
-    # 检查前一天是否休市
+    # 读取前一天的数据用于计算累计盈亏
+    # 如果前一天是休市日，需要找到上一个交易日
     prev_day = _get_latest_trading_day(as_of_date - timedelta(days=1))
     if prev_day != as_of_date - timedelta(days=1):
         print(f"\n⚠️ 提示：{prev_day} 是上一个交易日\n")
     
     all_positions: list[dict] = []
     all_portfolios: list[dict] = []
-
-    # 读取前一天的数据用于计算累计盈亏
-    # 如果前一天是休市日，需要找到上一个交易日
-    prev_day = _get_latest_trading_day(as_of_date - timedelta(days=1))
     prev_portfolios = {}
     prev_positions = {}
     if PORTFOLIOS_CSV.exists():

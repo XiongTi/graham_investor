@@ -38,33 +38,113 @@ def _parse_date(value: str | None) -> date:
     return datetime.strptime(value, "%Y-%m-%d").date()
 
 
+# ---------------------------------------------------------------------------
+# 美股交易所节假日（动态计算，支持任意年份）
+# ---------------------------------------------------------------------------
+
+def _nth_weekday_of_month(year: int, month: int, weekday: int, n: int) -> date:
+    """返回某月第 n 个指定星期几（weekday: 0=Mon, 6=Sun）"""
+    first_day = date(year, month, 1)
+    # 第一个目标星期几的日期
+    first_target = first_day + timedelta(days=(weekday - first_day.weekday()) % 7)
+    return first_target + timedelta(weeks=n - 1)
+
+
+def _last_weekday_of_month(year: int, month: int, weekday: int) -> date:
+    """返回某月最后一个指定星期几"""
+    # 从下个月第一天往前推
+    if month == 12:
+        last_day = date(year + 1, 1, 1) - timedelta(days=1)
+    else:
+        last_day = date(year, month + 1, 1) - timedelta(days=1)
+    days_back = (last_day.weekday() - weekday) % 7
+    return last_day - timedelta(days=days_back)
+
+
+def _easter_sunday(year: int) -> date:
+    """匿名格里高利历算法计算复活节（Anonymous Gregorian algorithm）"""
+    a = year % 19
+    b, c = divmod(year, 100)
+    d, e = divmod(b, 4)
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i, k = divmod(c, 4)
+    l = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * l) // 451
+    month, day = divmod(h + l - 7 * m + 114, 31)
+    return date(year, month, day + 1)
+
+
+def _observed_holiday(d: date) -> date:
+    """如果节假日落在周末，返回实际观察日（周六→周五，周日→周一）"""
+    if d.weekday() == 5:  # Saturday
+        return d - timedelta(days=1)
+    elif d.weekday() == 6:  # Sunday
+        return d + timedelta(days=1)
+    return d
+
+
+def _us_market_holidays(year: int) -> set[date]:
+    """
+    计算指定年份的美股交易所（NYSE/NASDAQ）休市日。
+    包含所有 NYSE 标准假日，支持任意年份。
+    """
+    holidays = set()
+
+    # 新年 New Year's Day — 1月1日
+    holidays.add(_observed_holiday(date(year, 1, 1)))
+
+    # 马丁·路德·金纪念日 MLK Day — 1月第3个周一
+    holidays.add(_nth_weekday_of_month(year, 1, 0, 3))
+
+    # 总统日 Presidents' Day — 2月第3个周一
+    holidays.add(_nth_weekday_of_month(year, 2, 0, 3))
+
+    # 耶稣受难日 Good Friday — 复活节前的周五（非联邦假日但交易所休市）
+    holidays.add(_easter_sunday(year) - timedelta(days=2))
+
+    # 阵亡将士纪念日 Memorial Day — 5月最后一个周一
+    holidays.add(_last_weekday_of_month(year, 5, 0))
+
+    # 六月节 Juneteenth — 6月19日（2021年起为联邦假日，NYSE 2022年起休市）
+    holidays.add(_observed_holiday(date(year, 6, 19)))
+
+    # 独立日 Independence Day — 7月4日
+    holidays.add(_observed_holiday(date(year, 7, 4)))
+
+    # 劳动节 Labor Day — 9月第1个周一
+    holidays.add(_nth_weekday_of_month(year, 9, 0, 1))
+
+    # 感恩节 Thanksgiving — 11月第4个周四
+    holidays.add(_nth_weekday_of_month(year, 11, 3, 4))
+
+    # 圣诞节 Christmas Day — 12月25日
+    holidays.add(_observed_holiday(date(year, 12, 25)))
+
+    return holidays
+
+
+# 缓存已计算的年份假日
+_holiday_cache: dict[int, set[date]] = {}
+
+
 def _is_us_market_holiday(check_date: date) -> bool:
-    """检查是否为美股休市日（周末或美国法定节假日）"""
+    """检查是否为美股休市日（周末或美国交易所假日），支持任意年份"""
     # 周末
     if check_date.weekday() >= 5:  # Saturday=5, Sunday=6
         return True
-    
-    # 美国法定节假日（2026年）
-    holidays_2026 = [
-        (2026, 1, 1),   # 新年 New Year's Day
-        (2026, 1, 19),  # 马丁·路德·金纪念日 MLK Day
-        (2026, 2, 16),  # 总统日 Presidents' Day
-        (2026, 5, 26),  # 阵亡将士纪念日 Memorial Day
-        (2026, 7, 4),   # 独立日 Independence Day
-        (2026, 9, 1),   # 劳动节 Labor Day
-        (2026, 11, 26),  # 感恩节 Thanksgiving
-        (2026, 12, 25), # 圣诞节 Christmas Day
-    ]
-    
-    for y, m, d in holidays_2026:
-        if check_date == date(y, m, d):
-            return True
-    
-    return False
+
+    # 动态计算并缓存该年的假日
+    year = check_date.year
+    if year not in _holiday_cache:
+        _holiday_cache[year] = _us_market_holidays(year)
+
+    return check_date in _holiday_cache[year]
 
 
 def _get_latest_trading_day(as_of_date: date) -> date:
-    """获取指定日期之前的最后一个美股交易日"""
+    """获取指定日期当天或之前的最后一个美股交易日"""
     check_date = as_of_date
     for _ in range(MAX_LOOKBACK_DAYS):
         if not _is_us_market_holiday(check_date):
@@ -106,12 +186,16 @@ def _entry_close(closes: pd.Series, inception_date: str, as_of_date: date) -> tu
 
 
 def _latest_two_closes(closes: pd.Series, as_of_date: date) -> tuple[pd.Timestamp | None, float | None, pd.Timestamp | None, float | None]:
+    """获取截至 as_of_date 当天（含）的最近两个收盘价"""
     if closes.empty:
         return None, None, None, None
     cutoff = pd.Timestamp(as_of_date.isoformat())
     if getattr(closes.index, "tz", None) is not None:
         cutoff = cutoff.tz_localize(closes.index.tz)
-    valid = closes[closes.index <= cutoff + pd.Timedelta(days=1)]
+    # 使用 normalize() 将 cutoff 设为当天 00:00，然后加一天得到次日 00:00
+    # 用 < 次日 00:00 来精确包含当天所有时间点的数据，排除次日数据
+    next_day = cutoff.normalize() + pd.Timedelta(days=1)
+    valid = closes[closes.index < next_day]
     if valid.empty:
         return None, None, None, None
     latest_idx = valid.index[-1]
@@ -129,7 +213,8 @@ def _to_iso(value: pd.Timestamp | None) -> str:
     return value.date().isoformat()
 
 
-def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date, capital_usd: float, prev_portfolio: dict | None = None, prev_positions: dict | None = None) -> tuple[list[dict], dict]:
+def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date, capital_usd: float) -> tuple[list[dict], dict]:
+    """构建组合快照 — 累计盈亏直接用 current_value - cost_basis 计算，不依赖前日 CSV"""
     allocation = capital_usd / len(tickers)
     position_rows: list[dict] = []
     portfolio_day_start = 0.0
@@ -146,17 +231,9 @@ def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date,
         current_value = shares * latest_price if latest_price else 0.0
         previous_value = shares * prev_price if prev_price else current_value
         day_pnl = current_value - previous_value
-        
-        # 计算每只股票的累计盈亏
-        position_key = (group_name, ticker)
-        prev_position = prev_positions.get(position_key) if prev_positions else None
-        if prev_position is not None:
-            prev_total_pnl = prev_position.get("total_pnl_usd", 0.0) or 0.0
-            cumulative_pnl = prev_total_pnl + day_pnl
-        else:
-            cumulative_pnl = day_pnl  # 第一天就是当天的盈亏
-        
-        total_pnl = cumulative_pnl
+
+        # 累计盈亏 = 当前市值 - 成本，无需依赖 CSV 连续性
+        total_pnl = current_value - cost_basis
         day_return_pct = (day_pnl / previous_value * 100) if previous_value else 0.0
         total_return_pct = (total_pnl / cost_basis * 100) if cost_basis else 0.0
 
@@ -185,6 +262,9 @@ def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date,
             }
         )
 
+    portfolio_day_pnl = portfolio_day_end - portfolio_day_start
+    portfolio_total_pnl = portfolio_day_end - portfolio_cost
+
     portfolio_row = {
         "observation_date": as_of_date.isoformat(),
         "group_name": group_name,
@@ -192,20 +272,11 @@ def _build_group_snapshot(group_name: str, tickers: list[str], as_of_date: date,
         "cost_basis_usd": round(portfolio_cost, 2),
         "prev_value_usd": round(portfolio_day_start, 2),
         "current_value_usd": round(portfolio_day_end, 2),
-        "day_pnl_usd": round(portfolio_day_end - portfolio_day_start, 2),
-        "day_return_pct": round(((portfolio_day_end - portfolio_day_start) / portfolio_day_start * 100) if portfolio_day_start else 0.0, 2),
+        "day_pnl_usd": round(portfolio_day_pnl, 2),
+        "day_return_pct": round((portfolio_day_pnl / portfolio_day_start * 100) if portfolio_day_start else 0.0, 2),
+        "total_pnl_usd": round(portfolio_total_pnl, 2),
+        "total_return_pct": round((portfolio_total_pnl / capital_usd * 100) if capital_usd else 0.0, 2),
     }
-
-    # 计算累计盈亏
-    day_pnl = portfolio_day_end - portfolio_day_start
-    if prev_portfolio is not None:
-        prev_total_pnl = prev_portfolio.get("total_pnl_usd", 0.0) or 0.0
-        cumulative_pnl = prev_total_pnl + day_pnl
-    else:
-        cumulative_pnl = day_pnl  # 第一天就是当天的盈亏
-    
-    portfolio_row["total_pnl_usd"] = round(cumulative_pnl, 2)
-    portfolio_row["total_return_pct"] = round((cumulative_pnl / capital_usd * 100) if capital_usd else 0.0, 2)
 
     return position_rows, portfolio_row
 
@@ -253,59 +324,46 @@ def _print_report(portfolio_rows: list[dict], position_rows: list[dict]) -> None
         )
 
 
-def run_monitor(as_of_date: date, capital_usd: float) -> None:
-    # 使用 ZoneInfo 自动处理夏令时
-    beijing_tz = ZoneInfo("Asia/Shanghai")
-    us_tz = ZoneInfo("America/New_York")
-    
-    # 北京时间 9 点对应的时间
-    beijing_now = datetime.now(beijing_tz)
-    # 转为美国时间（前一天的晚上 8-9 点）
-    us_time = beijing_now.astimezone(us_tz)
-    us_date = us_time.date()
-    
-    # 如果美国时间对应的是周末或节假日，跳过
-    if _is_us_market_holiday(us_date):
-        print(f"\n⚠️ 当前美国时间 {us_date} 是休市日（周末/节假日），跳过运行\n")
-        return
-    
-    # 确定目标日期（取美国时间对应的交易日）
-    target_date = _get_latest_trading_day(us_date)
-    if target_date != us_date:
-        print(f"\n⚠️ 美国时间 {us_date} 非交易日，自动计算 {target_date} 的收益\n")
-        as_of_date = target_date
+def run_monitor(as_of_date: date, capital_usd: float, *, date_explicit: bool = False) -> None:
+    """
+    运行每日监控。
+
+    Args:
+        as_of_date: 观测日期
+        capital_usd: 每组初始资金
+        date_explicit: 用户是否通过 --date 显式指定了日期。
+                       True  → 直接使用该日期，不做时区自动推断。
+                       False → 根据当前北京时间自动推算美东交易日。
+    """
+    if date_explicit:
+        # 用户显式指定日期，直接使用，仅检查是否为休市日
+        if _is_us_market_holiday(as_of_date):
+            print(f"\n⚠️ {as_of_date} 是休市日（周末/节假日），跳过运行\n")
+            return
+        target_date = as_of_date
     else:
-        # 北京时间日期和美国日期可能不同（如周一早上对应周日美国时间）
-        # 用美国日期作为数据日期
-        as_of_date = us_date
-    
-    # 读取前一天的数据用于计算累计盈亏
-    # 如果前一天是休市日，需要找到上一个交易日
-    prev_day = _get_latest_trading_day(as_of_date - timedelta(days=1))
-    if prev_day != as_of_date - timedelta(days=1):
-        print(f"\n⚠️ 提示：{prev_day} 是上一个交易日\n")
-    
+        # 自动模式：根据当前时间推算美东日期
+        beijing_tz = ZoneInfo("Asia/Shanghai")
+        us_tz = ZoneInfo("America/New_York")
+
+        beijing_now = datetime.now(beijing_tz)
+        us_time = beijing_now.astimezone(us_tz)
+        us_date = us_time.date()
+
+        if _is_us_market_holiday(us_date):
+            print(f"\n⚠️ 当前美国时间 {us_date} 是休市日（周末/节假日），跳过运行\n")
+            return
+
+        target_date = _get_latest_trading_day(us_date)
+        if target_date != us_date:
+            print(f"\n⚠️ 美国时间 {us_date} 非交易日，自动计算 {target_date} 的收益\n")
+
     all_positions: list[dict] = []
     all_portfolios: list[dict] = []
-    prev_portfolios = {}
-    prev_positions = {}
-    if PORTFOLIOS_CSV.exists():
-        prev_df = pd.read_csv(PORTFOLIOS_CSV)
-        prev_day_df = prev_df[prev_df["observation_date"] == prev_day.isoformat()]
-        for _, row in prev_day_df.iterrows():
-            prev_portfolios[row["group_name"]] = row
-    
-    if POSITIONS_CSV.exists():
-        prev_pos_df = pd.read_csv(POSITIONS_CSV)
-        prev_pos_day_df = prev_pos_df[prev_pos_df["observation_date"] == prev_day.isoformat()]
-        for _, row in prev_pos_day_df.iterrows():
-            key = (row["group_name"], row["ticker"])
-            prev_positions[key] = row
 
     for group_name, tickers in PORTFOLIO_GROUPS.items():
         positions, portfolio = _build_group_snapshot(
-            group_name, tickers, as_of_date, capital_usd, 
-            prev_portfolios.get(group_name), prev_positions
+            group_name, tickers, target_date, capital_usd,
         )
         all_positions.extend(positions)
         all_portfolios.append(portfolio)
@@ -323,4 +381,8 @@ if __name__ == "__main__":
     parser.add_argument("--date", help="Observation date in YYYY-MM-DD. Defaults to today.")
     parser.add_argument("--capital", type=float, default=INITIAL_CAPITAL_USD, help="Initial capital per portfolio in USD.")
     args = parser.parse_args()
-    run_monitor(_parse_date(args.date), args.capital)
+    run_monitor(
+        _parse_date(args.date),
+        args.capital,
+        date_explicit=args.date is not None,
+    )

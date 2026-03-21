@@ -7,6 +7,7 @@ Graham 量化选股模型 - 基于《聪明的投资者》
 3. 多维度评分：估值、财务稳健性、盈利稳定性、分红、成长性
 """
 
+import logging
 import math
 import warnings
 from dataclasses import dataclass, field
@@ -18,7 +19,12 @@ import yfinance as yf
 from .config import GRAHAM_CRITERIA, SCORE_WEIGHTS, FALLBACK_WATCHLIST, EARNINGS_DECLINE_PENALTY
 from .screener import discover_candidates
 
-warnings.filterwarnings("ignore")
+# 仅过滤 yfinance / urllib3 的噪音警告，不影响其他库
+warnings.filterwarnings("ignore", module=r"yfinance\..*")
+warnings.filterwarnings("ignore", module=r"urllib3\..*")
+warnings.filterwarnings("ignore", category=FutureWarning, module=r"pandas\..*")
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -298,6 +304,7 @@ def fetch_stock_data(ticker: str) -> StockAnalysis:
         _analyze_earnings_history(stock, result)
 
     except Exception as e:
+        logger.warning("获取 %s 数据失败: %s", ticker, e, exc_info=True)
         result.error = str(e)
 
     return result
@@ -305,9 +312,15 @@ def fetch_stock_data(ticker: str) -> StockAnalysis:
 
 def _analyze_earnings_history(stock: yf.Ticker, result: StockAnalysis):
     """分析历史盈利和分红数据"""
+    # 一次性获取 financials，避免重复 HTTP 请求
     try:
-        # 年度财务数据
         financials = stock.financials
+    except Exception as e:
+        logger.warning("%s: 获取年度财务数据失败: %s", result.ticker, e)
+        financials = None
+
+    # --- 盈利分析 ---
+    try:
         if financials is not None and not financials.empty:
             net_income_row = None
             for label in ["Net Income", "NetIncome", "Net Income Common Stockholders"]:
@@ -332,11 +345,11 @@ def _analyze_earnings_history(stock: yf.Ticker, result: StockAnalysis):
                     newest = yearly_earnings.iloc[-1]
                     if oldest > 0:
                         result.earnings_growth = (newest - oldest) / abs(oldest)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning("%s: 盈利历史分析失败: %s", result.ticker, e)
 
+    # --- 分红历史 ---
     try:
-        # 分红历史
         dividends = stock.dividends
         if dividends is not None and not dividends.empty:
             years_with_div = dividends.resample("YE").sum()
@@ -347,12 +360,11 @@ def _analyze_earnings_history(stock: yf.Ticker, result: StockAnalysis):
                 else:
                     break
             result.dividend_years = consecutive_div
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning("%s: 分红历史分析失败: %s", result.ticker, e)
 
+    # --- 营收增长率（复用已获取的 financials，不再重复请求）---
     try:
-        # 营收增长率
-        financials = stock.financials
         if financials is not None and not financials.empty:
             revenue_row = None
             for label in ["Total Revenue", "TotalRevenue", "Revenue"]:
@@ -366,8 +378,8 @@ def _analyze_earnings_history(stock: yf.Ticker, result: StockAnalysis):
                     newest = yearly_revenue.iloc[-1]
                     if oldest > 0:
                         result.revenue_growth = (newest - oldest) / abs(oldest)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning("%s: 营收增长分析失败: %s", result.ticker, e)
 
 
 def score_stock(analysis: StockAnalysis) -> StockAnalysis:
@@ -506,36 +518,37 @@ def print_report(df: pd.DataFrame):
         print("  没有有效数据")
         return
 
-    # 设置 pandas 显示选项（局部）
-    pd.set_option("display.max_columns", None)
-    pd.set_option("display.width", 180)
-    pd.set_option("display.float_format", "{:.2f}".format)
+    # 设置 pandas 显示选项（使用 option_context 避免污染全局设置）
+    with pd.option_context(
+        "display.max_columns", None,
+        "display.width", 180,
+        "display.float_format", "{:.2f}".format,
+    ):
+        # 完整排名
+        print("\n【完整排名】\n")
+        print(df.to_string(index=False))
 
-    # 完整排名
-    print("\n【完整排名】\n")
-    print(df.to_string(index=False))
+        # 价值最高的 10 只股票（按总分）
+        top10 = df.head(10)
+        if not top10.empty:
+            print("\n【值得投资的 10 只股票】\n")
+            cols = ["代码", "公司", "价格", "总分", "评级", "安全边际%"]
+            # 确保安全边际列存在并保留一位小数
+            top10 = top10.copy()
+            top10["安全边际%"] = top10["安全边际%"].round(1)
+            print(top10[cols].to_string(index=False))
 
-    # 价值最高的 10 只股票（按总分）
-    top10 = df.head(10)
-    if not top10.empty:
-        print("\n【值得投资的 10 只股票】\n")
-        cols = ["代码", "公司", "价格", "总分", "评级", "安全边际%"]
-        # 确保安全边际列存在并保留一位小数
-        top10 = top10.copy()
-        top10["安全边际%"] = top10["安全边际%"].round(1)
-        print(top10[cols].to_string(index=False))
+        # A/B 级股票
+        top_ab = df[df["评级"].isin(["A", "B"])]
+        if not top_ab.empty:
+            print(f"\n\n【Graham 推荐 (A/B 级)】共 {len(top_ab)} 只\n")
+            print(top_ab[["代码", "公司", "价格", "P/E", "P/B", "Graham#", "安全边际%", "总分", "评级"]].to_string(index=False))
 
-    # A/B 级股票
-    top_ab = df[df["评级"].isin(["A", "B"])]
-    if not top_ab.empty:
-        print(f"\n\n【Graham 推荐 (A/B 级)】共 {len(top_ab)} 只\n")
-        print(top_ab[["代码", "公司", "价格", "P/E", "P/B", "Graham#", "安全边际%", "总分", "评级"]].to_string(index=False))
-
-    # 安全边际最高
-    positive_margin = df[df["安全边际%"] > 0].head(5)
-    if not positive_margin.empty:
-        print(f"\n\n【安全边际最高 Top 5】\n")
-        print(positive_margin[["代码", "公司", "价格", "Graham#", "安全边际%", "总分"]].to_string(index=False))
+        # 安全边际最高
+        positive_margin = df[df["安全边际%"] > 0].head(5)
+        if not positive_margin.empty:
+            print(f"\n\n【安全边际最高 Top 5】\n")
+            print(positive_margin[["代码", "公司", "价格", "Graham#", "安全边际%", "总分"]].to_string(index=False))
 
     print("\n" + "=" * 90)
     print("  ⚠ 声明: 本模型仅供学习研究，不构成投资建议。投资有风险，入市需谨慎。")

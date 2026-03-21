@@ -34,6 +34,41 @@ def _parse_date(value: str | None) -> date:
     return datetime.strptime(value, "%Y-%m-%d").date()
 
 
+def _is_us_market_holiday(check_date: date) -> bool:
+    """检查是否为美股休市日（周末或美国法定节假日）"""
+    # 周末
+    if check_date.weekday() >= 5:  # Saturday=5, Sunday=6
+        return True
+    
+    # 美国法定节假日（2026年）
+    holidays_2026 = [
+        (2026, 1, 1),   # 新年 New Year's Day
+        (2026, 1, 19),  # 马丁·路德·金纪念日 MLK Day
+        (2026, 2, 16),  # 总统日 Presidents' Day
+        (2026, 5, 26),  # 阵亡将士纪念日 Memorial Day
+        (2026, 7, 4),   # 独立日 Independence Day
+        (2026, 9, 1),   # 劳动节 Labor Day
+        (2026, 11, 26),  # 感恩节 Thanksgiving
+        (2026, 12, 25), # 圣诞节 Christmas Day
+    ]
+    
+    for y, m, d in holidays_2026:
+        if check_date == date(y, m, d):
+            return True
+    
+    return False
+
+
+def _get_latest_trading_day(as_of_date: date) -> date:
+    """获取指定日期之前的最后一个美股交易日"""
+    check_date = as_of_date
+    for _ in range(10):  # 最多回溯10天
+        if not _is_us_market_holiday(check_date):
+            return check_date
+        check_date -= timedelta(days=1)
+    return as_of_date
+
+
 def _price_history(ticker: str, inception_date: str, as_of_date: date) -> pd.Series:
     start = (datetime.strptime(inception_date, "%Y-%m-%d").date() - timedelta(days=10)).isoformat()
     end = (as_of_date + timedelta(days=1)).isoformat()
@@ -215,11 +250,46 @@ def _print_report(portfolio_rows: list[dict], position_rows: list[dict]) -> None
 
 
 def run_monitor(as_of_date: date, capital_usd: float) -> None:
+    # 北京时间 9 AM = 美国时间前一天的 8 PM (夏令时为 9 PM)
+    # 检查这个美国时间是否为周末或节假日
+    from datetime import timezone
+    
+    # 将北京时间转换为美国东部时间
+    beijing_tz = timezone(timedelta(hours=8))
+    us_tz = timezone(timedelta(hours=-5))  # EST
+    
+    # 北京时间 9 点对应的时间
+    beijing_now = datetime.now(beijing_tz)
+    # 转为美国时间（前一天的晚上 8-9 点）
+    us_time = beijing_now.astimezone(us_tz)
+    us_date = us_time.date()
+    
+    # 如果美国时间对应的是周末或节假日，跳过
+    if _is_us_market_holiday(us_date):
+        print(f"\n⚠️ 当前美国时间 {us_date} 是休市日（周末/节假日），跳过运行\n")
+        return
+    
+    # 确定目标日期（取美国时间对应的交易日）
+    target_date = _get_latest_trading_day(us_date)
+    if target_date != us_date:
+        print(f"\n⚠️ 美国时间 {us_date} 非交易日，自动计算 {target_date} 的收益\n")
+        as_of_date = target_date
+    else:
+        # 北京时间日期和美国日期可能不同（如周一早上对应周日美国时间）
+        # 用美国日期作为数据日期
+        as_of_date = us_date
+    
+    # 检查前一天是否休市
+    prev_day = _get_latest_trading_day(as_of_date - timedelta(days=1))
+    if prev_day != as_of_date - timedelta(days=1):
+        print(f"\n⚠️ 提示：{prev_day} 是上一个交易日\n")
+    
     all_positions: list[dict] = []
     all_portfolios: list[dict] = []
 
     # 读取前一天的数据用于计算累计盈亏
-    prev_day = as_of_date - timedelta(days=1)
+    # 如果前一天是休市日，需要找到上一个交易日
+    prev_day = _get_latest_trading_day(as_of_date - timedelta(days=1))
     prev_portfolios = {}
     prev_positions = {}
     if PORTFOLIOS_CSV.exists():

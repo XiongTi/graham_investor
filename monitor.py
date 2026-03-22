@@ -13,12 +13,12 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import exchange_calendars as ecals
 import pandas as pd
 import yfinance as yf
 
-# 常量
-MAX_LOOKBACK_DAYS = 10  # 最多回溯天数找交易日
-
+# NYSE 交易日历（一次初始化，全局复用）
+_NYSE_CAL = ecals.get_calendar("XNYS")
 
 PORTFOLIO_GROUPS = {
     "fallback_top10": ["BRK-B", "JPM", "BAC", "GOOGL", "MSFT", "MRK", "T", "DIS", "JNJ", "IBM"],
@@ -26,6 +26,8 @@ PORTFOLIO_GROUPS = {
 }
 
 INCEPTION_DATE = "2026-03-18"
+# 预计算 inception 前 10 天的起始日期，避免每次调用 _price_history 时重复解析
+_INCEPTION_START = (datetime.strptime(INCEPTION_DATE, "%Y-%m-%d").date() - timedelta(days=10)).isoformat()
 INITIAL_CAPITAL_USD = 30_000.0
 DATA_DIR = Path(__file__).resolve().parent / "data"
 POSITIONS_CSV = DATA_DIR / "daily_positions.csv"
@@ -38,136 +40,40 @@ def _parse_date(value: str | None) -> date:
     return datetime.strptime(value, "%Y-%m-%d").date()
 
 
-# ---------------------------------------------------------------------------
-# 美股交易所节假日（动态计算，支持任意年份）
-# ---------------------------------------------------------------------------
-
-def _nth_weekday_of_month(year: int, month: int, weekday: int, n: int) -> date:
-    """返回某月第 n 个指定星期几（weekday: 0=Mon, 6=Sun）"""
-    first_day = date(year, month, 1)
-    # 第一个目标星期几的日期
-    first_target = first_day + timedelta(days=(weekday - first_day.weekday()) % 7)
-    return first_target + timedelta(weeks=n - 1)
-
-
-def _last_weekday_of_month(year: int, month: int, weekday: int) -> date:
-    """返回某月最后一个指定星期几"""
-    # 从下个月第一天往前推
-    if month == 12:
-        last_day = date(year + 1, 1, 1) - timedelta(days=1)
-    else:
-        last_day = date(year, month + 1, 1) - timedelta(days=1)
-    days_back = (last_day.weekday() - weekday) % 7
-    return last_day - timedelta(days=days_back)
-
-
-def _easter_sunday(year: int) -> date:
-    """匿名格里高利历算法计算复活节（Anonymous Gregorian algorithm）"""
-    a = year % 19
-    b, c = divmod(year, 100)
-    d, e = divmod(b, 4)
-    f = (b + 8) // 25
-    g = (b - f + 1) // 3
-    h = (19 * a + b - d - g + 15) % 30
-    i, k = divmod(c, 4)
-    l = (32 + 2 * e + 2 * i - h - k) % 7
-    m = (a + 11 * h + 22 * l) // 451
-    month, day = divmod(h + l - 7 * m + 114, 31)
-    return date(year, month, day + 1)
-
-
-def _observed_holiday(d: date) -> date:
-    """如果节假日落在周末，返回实际观察日（周六→周五，周日→周一）"""
-    if d.weekday() == 5:  # Saturday
-        return d - timedelta(days=1)
-    elif d.weekday() == 6:  # Sunday
-        return d + timedelta(days=1)
-    return d
-
-
-def _us_market_holidays(year: int) -> set[date]:
-    """
-    计算指定年份的美股交易所（NYSE/NASDAQ）休市日。
-    包含所有 NYSE 标准假日，支持任意年份。
-    """
-    holidays = set()
-
-    # 新年 New Year's Day — 1月1日
-    holidays.add(_observed_holiday(date(year, 1, 1)))
-
-    # 马丁·路德·金纪念日 MLK Day — 1月第3个周一
-    holidays.add(_nth_weekday_of_month(year, 1, 0, 3))
-
-    # 总统日 Presidents' Day — 2月第3个周一
-    holidays.add(_nth_weekday_of_month(year, 2, 0, 3))
-
-    # 耶稣受难日 Good Friday — 复活节前的周五（非联邦假日但交易所休市）
-    holidays.add(_easter_sunday(year) - timedelta(days=2))
-
-    # 阵亡将士纪念日 Memorial Day — 5月最后一个周一
-    holidays.add(_last_weekday_of_month(year, 5, 0))
-
-    # 六月节 Juneteenth — 6月19日（2021年起为联邦假日，NYSE 2022年起休市）
-    holidays.add(_observed_holiday(date(year, 6, 19)))
-
-    # 独立日 Independence Day — 7月4日
-    holidays.add(_observed_holiday(date(year, 7, 4)))
-
-    # 劳动节 Labor Day — 9月第1个周一
-    holidays.add(_nth_weekday_of_month(year, 9, 0, 1))
-
-    # 感恩节 Thanksgiving — 11月第4个周四
-    holidays.add(_nth_weekday_of_month(year, 11, 3, 4))
-
-    # 圣诞节 Christmas Day — 12月25日
-    holidays.add(_observed_holiday(date(year, 12, 25)))
-
-    return holidays
-
-
-# 缓存已计算的年份假日
-_holiday_cache: dict[int, set[date]] = {}
-
-
-def _is_us_market_holiday(check_date: date) -> bool:
-    """检查是否为美股休市日（周末或美国交易所假日），支持任意年份"""
-    # 周末
-    if check_date.weekday() >= 5:  # Saturday=5, Sunday=6
-        return True
-
-    # 动态计算并缓存该年的假日
-    year = check_date.year
-    if year not in _holiday_cache:
-        _holiday_cache[year] = _us_market_holidays(year)
-
-    return check_date in _holiday_cache[year]
+def _is_trading_day(check_date: date) -> bool:
+    """检查是否为 NYSE 交易日"""
+    return _NYSE_CAL.is_session(pd.Timestamp(check_date))
 
 
 def _get_latest_trading_day(as_of_date: date) -> date:
-    """获取指定日期当天或之前的最后一个美股交易日"""
-    check_date = as_of_date
-    for _ in range(MAX_LOOKBACK_DAYS):
-        if not _is_us_market_holiday(check_date):
-            return check_date
-        check_date -= timedelta(days=1)
-    return as_of_date
+    """获取指定日期当天或之前的最近一个 NYSE 交易日"""
+    ts = pd.Timestamp(as_of_date)
+    if _NYSE_CAL.is_session(ts):
+        return as_of_date
+    prev = _NYSE_CAL.previous_close(ts)
+    return prev.date()
 
 
 def _price_history(ticker: str, inception_date: str, as_of_date: date) -> pd.Series:
-    start = (datetime.strptime(inception_date, "%Y-%m-%d").date() - timedelta(days=10)).isoformat()
     end = (as_of_date + timedelta(days=1)).isoformat()
-    history = yf.Ticker(ticker).history(start=start, end=end, auto_adjust=False)
+    history = yf.Ticker(ticker).history(start=_INCEPTION_START, end=end, auto_adjust=False)
     if history is None or history.empty:
         return pd.Series(dtype=float)
     return history["Close"].dropna()
 
 
+def _make_tz_aware_cutoff(date_value, tz) -> pd.Timestamp:
+    """构建与 Series index 时区一致的 cutoff Timestamp"""
+    cutoff = pd.Timestamp(date_value if isinstance(date_value, str) else date_value.isoformat())
+    if tz is not None:
+        cutoff = cutoff.tz_localize(tz)
+    return cutoff
+
+
 def _first_close_on_or_after(closes: pd.Series, target_date: str) -> tuple[pd.Timestamp | None, float | None]:
     if closes.empty:
         return None, None
-    cutoff = pd.Timestamp(target_date)
-    if getattr(closes.index, "tz", None) is not None:
-        cutoff = cutoff.tz_localize(closes.index.tz)
+    cutoff = _make_tz_aware_cutoff(target_date, getattr(closes.index, "tz", None))
     valid = closes[closes.index >= cutoff]
     if valid.empty:
         return None, None
@@ -189,11 +95,8 @@ def _latest_two_closes(closes: pd.Series, as_of_date: date) -> tuple[pd.Timestam
     """获取截至 as_of_date 当天（含）的最近两个收盘价"""
     if closes.empty:
         return None, None, None, None
-    cutoff = pd.Timestamp(as_of_date.isoformat())
-    if getattr(closes.index, "tz", None) is not None:
-        cutoff = cutoff.tz_localize(closes.index.tz)
-    # 使用 normalize() 将 cutoff 设为当天 00:00，然后加一天得到次日 00:00
-    # 用 < 次日 00:00 来精确包含当天所有时间点的数据，排除次日数据
+    cutoff = _make_tz_aware_cutoff(as_of_date, getattr(closes.index, "tz", None))
+    # 用 < 次日 00:00 来精确包含当天所有时间点的数据
     next_day = cutoff.normalize() + pd.Timedelta(days=1)
     valid = closes[closes.index < next_day]
     if valid.empty:
@@ -336,21 +239,15 @@ def run_monitor(as_of_date: date, capital_usd: float, *, date_explicit: bool = F
                        False → 根据当前北京时间自动推算美东交易日。
     """
     if date_explicit:
-        # 用户显式指定日期，直接使用，仅检查是否为休市日
-        if _is_us_market_holiday(as_of_date):
+        if not _is_trading_day(as_of_date):
             print(f"\n⚠️ {as_of_date} 是休市日（周末/节假日），跳过运行\n")
             return
         target_date = as_of_date
     else:
-        # 自动模式：根据当前时间推算美东日期
-        beijing_tz = ZoneInfo("Asia/Shanghai")
         us_tz = ZoneInfo("America/New_York")
+        us_date = datetime.now(us_tz).date()
 
-        beijing_now = datetime.now(beijing_tz)
-        us_time = beijing_now.astimezone(us_tz)
-        us_date = us_time.date()
-
-        if _is_us_market_holiday(us_date):
+        if not _is_trading_day(us_date):
             print(f"\n⚠️ 当前美国时间 {us_date} 是休市日（周末/节假日），跳过运行\n")
             return
 

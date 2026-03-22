@@ -10,7 +10,9 @@ Graham 量化选股模型 - 基于《聪明的投资者》
 import logging
 import math
 import warnings
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
+from itertools import takewhile
 from typing import List, Optional
 
 import pandas as pd
@@ -62,32 +64,70 @@ class StockAnalysis:
     error: str = ""
 
 
-def _score_pe(pe: float) -> float:
-    """P/E 评分: 越低越好, 0为最差, 100为最好"""
-    if pe <= 0:
-        return 0  # 亏损
-    max_pe = GRAHAM_CRITERIA["pe_ratio_max"]
-    if pe <= max_pe * 0.5:
+# ============================================================
+# 通用评分工具函数 — 消除各 _score_xxx 之间的重复逻辑
+# ============================================================
+
+def _score_lower_is_better(value: float, max_threshold: float) -> float:
+    """通用"越低越好"评分（用于 P/E、P/B 等）"""
+    if value <= 0:
+        return 0
+    if value <= max_threshold * 0.5:
         return 100
-    elif pe <= max_pe:
-        return 100 - (pe - max_pe * 0.5) / (max_pe * 0.5) * 40
-    elif pe <= max_pe * 2:
-        return 60 - (pe - max_pe) / max_pe * 60
+    elif value <= max_threshold:
+        return 100 - (value - max_threshold * 0.5) / (max_threshold * 0.5) * 40
+    elif value <= max_threshold * 2:
+        return 60 - (value - max_threshold) / max_threshold * 60
     return 0
+
+
+def _score_years_vs_target(years: int, target: int) -> float:
+    """通用"连续年数"评分（用于盈利稳定性、分红持续性）"""
+    if years >= target:
+        return min(100, 70 + (years - target) * 6)
+    return max(0, years / target * 70)
+
+
+def _score_growth(growth: float, target: float, full_marks_mul: float = 2,
+                  interp_divisor_mul: float = 1, negative_floor: float = 0) -> float:
+    """通用增长评分（用于盈利增长、营收增长）
+    full_marks_mul: growth >= target * full_marks_mul 时满分
+    interp_divisor_mul: 70→100 区间的插值分母倍数
+    negative_floor: 轻微负增长时的保底分（0 表示不允许负增长得分）
+    """
+    if growth >= target * full_marks_mul:
+        return 100
+    elif growth >= target:
+        return 70 + (growth - target) / (target * interp_divisor_mul) * 30
+    elif growth > 0:
+        return growth / target * 70
+    elif negative_floor > 0 and growth > -0.1:
+        return negative_floor
+    return 0
+
+
+def _score_quality_tier(value: float, excellent: float, good: float,
+                        floor_threshold: float, floor_base: float) -> float:
+    """通用"质量因子"评分（用于 ROE、净利率、FCF 收益率）"""
+    if value <= 0:
+        return 0
+    if value >= excellent * 2:
+        return 100
+    elif value >= excellent:
+        return 80 + (value - excellent) / excellent * 20
+    elif value >= good:
+        return 60 + (value - good) / (excellent - good) * 20
+    elif value >= floor_threshold:
+        return floor_base + (value - floor_threshold) / (good - floor_threshold) * (60 - floor_base)
+    return value / floor_threshold * floor_base
+
+
+def _score_pe(pe: float) -> float:
+    return _score_lower_is_better(pe, GRAHAM_CRITERIA["pe_ratio_max"])
 
 
 def _score_pb(pb: float) -> float:
-    """P/B 评分"""
-    if pb <= 0:
-        return 0
-    max_pb = GRAHAM_CRITERIA["pb_ratio_max"]
-    if pb <= max_pb * 0.5:
-        return 100
-    elif pb <= max_pb:
-        return 100 - (pb - max_pb * 0.5) / (max_pb * 0.5) * 40
-    elif pb <= max_pb * 2:
-        return 60 - (pb - max_pb) / max_pb * 60
-    return 0
+    return _score_lower_is_better(pb, GRAHAM_CRITERIA["pb_ratio_max"])
 
 
 def _score_graham_number(price: float, graham_num: float) -> float:
@@ -96,16 +136,16 @@ def _score_graham_number(price: float, graham_num: float) -> float:
         return 0
     margin = (graham_num - price) / graham_num
     if margin >= 0.5:
-        return 100  # 50%+ 安全边际，极佳
+        return 100
     elif margin >= 0.3:
         return 80
     elif margin >= 0.1:
         return 60
     elif margin >= 0:
-        return 40  # 价格接近但未超过 Graham Number
+        return 40
     elif margin >= -0.3:
-        return 20  # 轻度高估
-    return 0  # 严重高估
+        return 20
+    return 0
 
 
 def _score_current_ratio(cr: float) -> float:
@@ -124,7 +164,7 @@ def _score_current_ratio(cr: float) -> float:
 def _score_debt_equity(de: float) -> float:
     """债务权益比评分: 越低越好"""
     if de <= 0:
-        return 100  # 无债务
+        return 100
     max_de = GRAHAM_CRITERIA["debt_equity_max"]
     if de <= max_de * 0.5:
         return 100
@@ -138,45 +178,20 @@ def _score_debt_equity(de: float) -> float:
 
 
 def _score_earnings_stability(years: int) -> float:
-    """盈利稳定性评分"""
-    target = GRAHAM_CRITERIA["min_profitable_years"]
-    if years >= target:
-        return min(100, 70 + (years - target) * 6)
-    return max(0, years / target * 70)
+    return _score_years_vs_target(years, GRAHAM_CRITERIA["min_profitable_years"])
 
 
 def _score_dividend(years: int) -> float:
-    """分红持续性评分"""
-    target = GRAHAM_CRITERIA["min_dividend_years"]
-    if years >= target:
-        return min(100, 70 + (years - target) * 6)
-    return max(0, years / target * 70)
+    return _score_years_vs_target(years, GRAHAM_CRITERIA["min_dividend_years"])
 
 
 def _score_earnings_growth(growth: float) -> float:
-    """盈利增长评分"""
-    target = GRAHAM_CRITERIA["earnings_growth_min"]
-    if growth >= target * 2:
-        return 100
-    elif growth >= target:
-        return 70 + (growth - target) / target * 30
-    elif growth > 0:
-        return growth / target * 70
-    return 0  # 负增长
+    return _score_growth(growth, GRAHAM_CRITERIA["earnings_growth_min"])
 
 
 def _score_revenue_growth(growth: float) -> float:
-    """营收增长评分"""
-    target = GRAHAM_CRITERIA["revenue_growth_min"]
-    if growth >= target * 3:
-        return 100
-    elif growth >= target:
-        return 70 + (growth - target) / (target * 2) * 30
-    elif growth > 0:
-        return growth / target * 70
-    elif growth > -0.1:
-        return 20  # 轻微下滑
-    return 0  # 营收严重萎缩
+    return _score_growth(growth, GRAHAM_CRITERIA["revenue_growth_min"],
+                         full_marks_mul=3, interp_divisor_mul=2, negative_floor=20)
 
 
 def _apply_earnings_decline_penalty(total: float, earnings_growth: float) -> float:
@@ -194,41 +209,17 @@ def _apply_earnings_decline_penalty(total: float, earnings_growth: float) -> flo
 
 
 def _score_roe(roe: float) -> float:
-    """ROE 评分 — 巴菲特最看重的指标，衡量公司用股东的钱赚钱的效率"""
-    if roe <= 0:
-        return 0
-    excellent = GRAHAM_CRITERIA["roe_excellent"]
-    good = GRAHAM_CRITERIA["roe_good"]
-    if roe >= excellent * 2:
-        return 100  # ROE ≥ 40%，极其优秀
-    elif roe >= excellent:
-        return 80 + (roe - excellent) / excellent * 20
-    elif roe >= good:
-        return 60 + (roe - good) / (excellent - good) * 20
-    elif roe >= 0.08:
-        return 30 + (roe - 0.08) / (good - 0.08) * 30
-    return roe / 0.08 * 30
+    return _score_quality_tier(roe, GRAHAM_CRITERIA["roe_excellent"],
+                               GRAHAM_CRITERIA["roe_good"], 0.08, 30)
 
 
 def _score_net_margin(margin: float) -> float:
-    """净利润率评分 — 高利润率 = 定价权 = 护城河"""
-    if margin <= 0:
-        return 0
-    excellent = GRAHAM_CRITERIA["net_margin_excellent"]
-    good = GRAHAM_CRITERIA["net_margin_good"]
-    if margin >= excellent * 2:
-        return 100
-    elif margin >= excellent:
-        return 80 + (margin - excellent) / excellent * 20
-    elif margin >= good:
-        return 60 + (margin - good) / (excellent - good) * 20
-    elif margin >= 0.03:
-        return 20 + (margin - 0.03) / (good - 0.03) * 40
-    return margin / 0.03 * 20
+    return _score_quality_tier(margin, GRAHAM_CRITERIA["net_margin_excellent"],
+                               GRAHAM_CRITERIA["net_margin_good"], 0.03, 20)
 
 
 def _score_fcf_yield(fcf_yield: float) -> float:
-    """自由现金流收益率评分 — 比 P/E 更真实的估值指标"""
+    """自由现金流收益率评分 — 原始逻辑: good*2 满分, good 得 70, 0.02 得 30"""
     if fcf_yield <= 0:
         return 0
     good = GRAHAM_CRITERIA["fcf_yield_good"]
@@ -239,6 +230,34 @@ def _score_fcf_yield(fcf_yield: float) -> float:
     elif fcf_yield >= 0.02:
         return 30 + (fcf_yield - 0.02) / (good - 0.02) * 40
     return fcf_yield / 0.02 * 30
+
+
+def _get_num(info: dict, key: str) -> float:
+    """从 yfinance info dict 安全取数值，处理 None 返回"""
+    return info.get(key, 0) or 0
+
+
+def _find_financial_row(financials: pd.DataFrame, labels: list) -> Optional[pd.Series]:
+    """在 financials 中按优先级查找行（yfinance 不同版本可能用不同标签）"""
+    for label in labels:
+        if label in financials.index:
+            return financials.loc[label]
+    return None
+
+
+def _count_trailing_positive(values) -> int:
+    """从末尾开始计数连续 > 0 的个数"""
+    return sum(1 for _ in takewhile(lambda v: v > 0, reversed(values)))
+
+
+def _calc_growth_rate(series: pd.Series) -> Optional[float]:
+    """计算首尾增长率，要求至少 2 个数据点且起点 > 0"""
+    if len(series) < 2:
+        return None
+    oldest, newest = series.iloc[0], series.iloc[-1]
+    if oldest > 0:
+        return (newest - oldest) / abs(oldest)
+    return None
 
 
 def calc_graham_number(eps: float, bvps: float) -> float:
@@ -265,42 +284,32 @@ def fetch_stock_data(ticker: str) -> StockAnalysis:
             result.error = "无法获取数据"
             return result
 
-        # 基本信息
         result.company_name = info.get("shortName", info.get("longName", ticker))
         result.sector = info.get("sector", "N/A")
         result.current_price = info.get("currentPrice", info.get("regularMarketPrice", 0))
 
-        # EPS 和 Book Value
-        result.eps = info.get("trailingEps", 0) or 0
-        result.book_value_per_share = info.get("bookValue", 0) or 0
-
-        # P/E 和 P/B
-        result.pe_ratio = info.get("trailingPE", 0) or 0
-        result.pb_ratio = info.get("priceToBook", 0) or 0
+        result.eps = _get_num(info, "trailingEps")
+        result.book_value_per_share = _get_num(info, "bookValue")
+        result.pe_ratio = _get_num(info, "trailingPE")
+        result.pb_ratio = _get_num(info, "priceToBook")
         result.pe_times_pb = result.pe_ratio * result.pb_ratio
 
-        # Graham Number
         result.graham_number = calc_graham_number(result.eps, result.book_value_per_share)
         if result.graham_number > 0 and result.current_price > 0:
             result.margin_of_safety = (result.graham_number - result.current_price) / result.graham_number
 
-        # 财务指标
-        result.current_ratio = info.get("currentRatio", 0) or 0
-        result.debt_to_equity = (info.get("debtToEquity", 0) or 0) / 100  # yfinance 返回百分比
+        result.current_ratio = _get_num(info, "currentRatio")
+        # yfinance 返回百分比形式的 D/E，需要除以 100
+        result.debt_to_equity = _get_num(info, "debtToEquity") / 100
+        result.dividend_yield = _get_num(info, "dividendYield")
 
-        # 股息
-        result.dividend_yield = info.get("dividendYield", 0) or 0
-
-        # 质量因子
-        result.roe = info.get("returnOnEquity", 0) or 0
-        result.net_margin = info.get("profitMargins", 0) or 0
-        # 自由现金流收益率 = 自由现金流 / 市值
-        fcf = info.get("freeCashflow", 0) or 0
-        market_cap = info.get("marketCap", 0) or 0
+        result.roe = _get_num(info, "returnOnEquity")
+        result.net_margin = _get_num(info, "profitMargins")
+        fcf = _get_num(info, "freeCashflow")
+        market_cap = _get_num(info, "marketCap")
         if market_cap > 0 and fcf > 0:
             result.fcf_yield = fcf / market_cap
 
-        # 历史盈利分析
         _analyze_earnings_history(stock, result)
 
     except Exception as e:
@@ -319,67 +328,39 @@ def _analyze_earnings_history(stock: yf.Ticker, result: StockAnalysis):
         logger.warning("%s: 获取年度财务数据失败: %s", result.ticker, e)
         financials = None
 
-    # --- 盈利分析 ---
-    try:
-        if financials is not None and not financials.empty:
-            net_income_row = None
-            for label in ["Net Income", "NetIncome", "Net Income Common Stockholders"]:
-                if label in financials.index:
-                    net_income_row = financials.loc[label]
-                    break
+    if financials is not None and not financials.empty:
+        # 盈利分析
+        try:
+            net_income = _find_financial_row(financials,
+                                             ["Net Income", "NetIncome", "Net Income Common Stockholders"])
+            if net_income is not None:
+                yearly = net_income.dropna().sort_index()
+                result.profitable_years = _count_trailing_positive(yearly.values)
+                growth = _calc_growth_rate(yearly)
+                if growth is not None:
+                    result.earnings_growth = growth
+        except Exception as e:
+            logger.warning("%s: 盈利历史分析失败: %s", result.ticker, e)
 
-            if net_income_row is not None:
-                yearly_earnings = net_income_row.dropna().sort_index()
-                # 连续盈利年数
-                consecutive = 0
-                for val in reversed(yearly_earnings.values):
-                    if val > 0:
-                        consecutive += 1
-                    else:
-                        break
-                result.profitable_years = consecutive
+        # 营收增长率
+        try:
+            revenue = _find_financial_row(financials, ["Total Revenue", "TotalRevenue", "Revenue"])
+            if revenue is not None:
+                yearly = revenue.dropna().sort_index()
+                growth = _calc_growth_rate(yearly)
+                if growth is not None:
+                    result.revenue_growth = growth
+        except Exception as e:
+            logger.warning("%s: 营收增长分析失败: %s", result.ticker, e)
 
-                # 盈利增长率
-                if len(yearly_earnings) >= 2:
-                    oldest = yearly_earnings.iloc[0]
-                    newest = yearly_earnings.iloc[-1]
-                    if oldest > 0:
-                        result.earnings_growth = (newest - oldest) / abs(oldest)
-    except Exception as e:
-        logger.warning("%s: 盈利历史分析失败: %s", result.ticker, e)
-
-    # --- 分红历史 ---
+    # 分红历史
     try:
         dividends = stock.dividends
         if dividends is not None and not dividends.empty:
             years_with_div = dividends.resample("YE").sum()
-            consecutive_div = 0
-            for val in reversed(years_with_div.values):
-                if val > 0:
-                    consecutive_div += 1
-                else:
-                    break
-            result.dividend_years = consecutive_div
+            result.dividend_years = _count_trailing_positive(years_with_div.values)
     except Exception as e:
         logger.warning("%s: 分红历史分析失败: %s", result.ticker, e)
-
-    # --- 营收增长率（复用已获取的 financials，不再重复请求）---
-    try:
-        if financials is not None and not financials.empty:
-            revenue_row = None
-            for label in ["Total Revenue", "TotalRevenue", "Revenue"]:
-                if label in financials.index:
-                    revenue_row = financials.loc[label]
-                    break
-            if revenue_row is not None:
-                yearly_revenue = revenue_row.dropna().sort_index()
-                if len(yearly_revenue) >= 2:
-                    oldest = yearly_revenue.iloc[0]
-                    newest = yearly_revenue.iloc[-1]
-                    if oldest > 0:
-                        result.revenue_growth = (newest - oldest) / abs(oldest)
-    except Exception as e:
-        logger.warning("%s: 营收增长分析失败: %s", result.ticker, e)
 
 
 def score_stock(analysis: StockAnalysis) -> StockAnalysis:
@@ -403,14 +384,10 @@ def score_stock(analysis: StockAnalysis) -> StockAnalysis:
     }
     analysis.scores = scores
 
-    # 加权总分
     total = sum(scores[k] * SCORE_WEIGHTS[k] for k in scores)
-
-    # 盈利负增长惩罚
     total = _apply_earnings_decline_penalty(total, analysis.earnings_growth)
     analysis.total_score = round(total, 1)
 
-    # 评级
     if total >= 80:
         analysis.grade = "A"   # 强烈推荐 - 高度符合 Graham 标准
     elif total >= 65:
@@ -450,19 +427,26 @@ def screen_stocks(tickers: Optional[List[str]] = None, auto_discover: bool = Tru
     results = []
     total = len(tickers)
 
-    for i, ticker in enumerate(tickers, 1):
-        print(f"  [{i}/{total}] 分析 {ticker}...", end="", flush=True)
+    def _analyze_one(ticker: str) -> StockAnalysis:
         analysis = fetch_stock_data(ticker)
-        analysis = score_stock(analysis)
+        return score_stock(analysis)
 
-        if analysis.error:
-            print(f" ⚠ {analysis.error}")
-        else:
-            print(f" ✓ 评分: {analysis.total_score} ({analysis.grade})")
+    # 并发获取和评分，I/O 密集型任务使用线程池加速
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = {executor.submit(_analyze_one, t): t for t in tickers}
+        for i, future in enumerate(as_completed(futures), 1):
+            ticker = futures[future]
+            try:
+                analysis = future.result()
+            except Exception as e:
+                analysis = StockAnalysis(ticker=ticker, error=str(e))
 
-        results.append(analysis)
+            if analysis.error:
+                print(f"  [{i}/{total}] {ticker} ⚠ {analysis.error}")
+            else:
+                print(f"  [{i}/{total}] {ticker} ✓ 评分: {analysis.total_score} ({analysis.grade})")
+            results.append(analysis)
 
-    # 构建 DataFrame
     rows = []
     for r in results:
         if r.error:
@@ -498,15 +482,6 @@ def screen_stocks(tickers: Optional[List[str]] = None, auto_discover: bool = Tru
     return df
 
 
-def select_top10(tickers: Optional[List[str]] = None, top_n: int = 10, auto_discover: bool = True) -> pd.DataFrame:
-    """返回前 top_n 名的股票（按总分）
-    该函数会复用 screen_stocks 完成完整筛选，然后取前 N 行。
-    """
-    df = screen_stocks(tickers, auto_discover=auto_discover)
-    if df.empty:
-        return df
-    return df.head(top_n)
-
 
 def print_report(df: pd.DataFrame):
     """打印分析报告"""
@@ -518,37 +493,23 @@ def print_report(df: pd.DataFrame):
         print("  没有有效数据")
         return
 
-    # 设置 pandas 显示选项（使用 option_context 避免污染全局设置）
+    # 使用 option_context 避免污染全局设置
     with pd.option_context(
         "display.max_columns", None,
         "display.width", 180,
         "display.float_format", "{:.2f}".format,
     ):
+        summary_cols = ["代码", "公司", "价格", "P/E", "P/B", "Graham#", "安全边际%", "总分", "评级"]
+
+        # A/B 级推荐（高分股一目了然）
+        top_ab = df[df["评级"].isin(["A", "B"])]
+        if not top_ab.empty:
+            print(f"\n【Graham 推荐 (A/B 级)】共 {len(top_ab)} 只\n")
+            print(top_ab[summary_cols].to_string(index=False))
+
         # 完整排名
         print("\n【完整排名】\n")
         print(df.to_string(index=False))
-
-        # 价值最高的 10 只股票（按总分）
-        top10 = df.head(10)
-        if not top10.empty:
-            print("\n【值得投资的 10 只股票】\n")
-            cols = ["代码", "公司", "价格", "总分", "评级", "安全边际%"]
-            # 确保安全边际列存在并保留一位小数
-            top10 = top10.copy()
-            top10["安全边际%"] = top10["安全边际%"].round(1)
-            print(top10[cols].to_string(index=False))
-
-        # A/B 级股票
-        top_ab = df[df["评级"].isin(["A", "B"])]
-        if not top_ab.empty:
-            print(f"\n\n【Graham 推荐 (A/B 级)】共 {len(top_ab)} 只\n")
-            print(top_ab[["代码", "公司", "价格", "P/E", "P/B", "Graham#", "安全边际%", "总分", "评级"]].to_string(index=False))
-
-        # 安全边际最高
-        positive_margin = df[df["安全边际%"] > 0].head(5)
-        if not positive_margin.empty:
-            print(f"\n\n【安全边际最高 Top 5】\n")
-            print(positive_margin[["代码", "公司", "价格", "Graham#", "安全边际%", "总分"]].to_string(index=False))
 
     print("\n" + "=" * 90)
     print("  ⚠ 声明: 本模型仅供学习研究，不构成投资建议。投资有风险，入市需谨慎。")

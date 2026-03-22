@@ -78,13 +78,9 @@ def discover_candidates() -> list[str]:
     query = _build_graham_query()
     quotes = _paginate_screen(query)
 
-    tickers = []
-    seen = set()
-    for q in quotes:
-        symbol = q.get("symbol", "")
-        if symbol and symbol not in seen:
-            tickers.append(symbol)
-            seen.add(symbol)
+    tickers = list(dict.fromkeys(
+        q.get("symbol", "") for q in quotes if q.get("symbol")
+    ))
 
     print(f"  ✓ 预筛完成，发现 {len(tickers)} 只候选股票")
     return tickers

@@ -1,7 +1,30 @@
 __pycache__/
+.pycache/
 *.pyc
 .DS_Store
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+.env
+.env.*
+.python-version
+.idea/
+.vscode/
+
+# Runtime data
+data/*.db
 data/*.csv
+data/universe/*.csv
+!data/universe/sources/
+!data/universe/sources/*.csv
+
+# Local tool output
 xhs_output
 xhs_content.md
-docs/
+.claude/

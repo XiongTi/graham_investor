@@ -1,0 +1,297 @@
+ticker,name,exchange,board,status,is_active,is_common_stock,source
+600519,Kweichow Moutai,SH,main_board,normal,True,True,seed_file
+000858,Wuliangye,SZ,main_board,normal,True,True,seed_file
+600036,China Merchants Bank,SH,main_board,normal,True,True,seed_file
+600900,China Yangtze Power,SH,main_board,normal,True,True,seed_file
+600276,Hengrui Medicine,SH,main_board,normal,True,True,seed_file
+600887,Yili,SH,main_board,normal,True,True,seed_file
+000333,Midea Group,SZ,main_board,normal,True,True,seed_file
+002415,Hikvision,SZ,main_board,normal,True,True,seed_file
+002594,BYD,SZ,main_board,normal,True,True,seed_file
+300750,CATL,SZ,chinext,normal,True,True,seed_file
+300760,Shenzhen Mindray,SZ,chinext,normal,True,True,seed_file
+300308,Zhongji Innolight,SZ,chinext,normal,True,True,seed_file
+000651,Gree Electric,SZ,main_board,normal,True,True,seed_file
+601318,Ping An Insurance,SH,main_board,normal,True,True,seed_file
+600309,Wanhua Chemical,SH,main_board,normal,True,True,seed_file
+000063,ZTE,SZ,main_board,normal,True,True,seed_file
+002311,Haida Group,SZ,main_board,normal,True,True,seed_file
+300274,Sungrow Power,SZ,chinext,normal,True,True,seed_file
+600809,Shanxi Fenjiu,SH,main_board,normal,True,True,seed_file
+601166,Industrial Bank,SH,main_board,normal,True,True,seed_file
+601088,China Shenhua,SH,main_board,normal,True,True,seed_file
+600438,Tongwei,SH,main_board,normal,True,True,seed_file
+601899,Zijin Mining,SH,main_board,normal,True,True,seed_file
+000725,BOE A,SZ,main_board,normal,True,True,seed_file
+601012,Longi Green Energy,SH,main_board,normal,True,True,seed_file
+600031,Sany Heavy,SH,main_board,normal,True,True,seed_file
+002352,SF Holding,SZ,main_board,normal,True,True,seed_file
+603259,Wuxi AppTec,SH,main_board,normal,True,True,seed_file
+600426,Sinochem International,SH,main_board,normal,True,True,seed_file
+601668,China State Construction,SH,main_board,normal,True,True,seed_file
+601398,ICBC,SH,main_board,normal,True,True,seed_file
+601288,Agricultural Bank of China,SH,main_board,normal,True,True,seed_file
+601939,China Construction Bank,SH,main_board,normal,True,True,seed_file
+601988,Bank of China,SH,main_board,normal,True,True,seed_file
+600030,CITIC Securities,SH,main_board,normal,True,True,seed_file
+600585,Conch Cement,SH,main_board,normal,True,True,seed_file
+603288,Haitian Flavouring,SH,main_board,normal,True,True,seed_file
+002714,Muyuan Foods,SZ,main_board,normal,True,True,seed_file
+300124,Shenzhen Inovance,SZ,chinext,normal,True,True,seed_file
+002142,Ningbo Bank,SZ,main_board,normal,True,True,seed_file
+603501,Will Semiconductor,SH,main_board,normal,True,True,seed_file
+600690,Haier Smart Home,SH,main_board,normal,True,True,seed_file
+600048,Poly Developments,SH,main_board,normal,True,True,seed_file
+000001,Ping An Bank,SZ,main_board,normal,True,True,seed_file
+000568,Luzhou Laojiao,SZ,main_board,normal,True,True,seed_file
+600104,SAIC Motor,SH,main_board,normal,True,True,seed_file
+002179,AVIC Jonhon,SZ,main_board,normal,True,True,seed_file
+300015,Aier Eye Hospital,SZ,chinext,normal,True,True,seed_file
+300059,East Money,SZ,chinext,normal,True,True,seed_file
+300033,Hithink RoyalFlush,SZ,chinext,normal,True,True,seed_file
+300498,Wens Foodstuff,SZ,chinext,normal,True,True,seed_file
+300408,Chaozhou Three-Circle,SZ,chinext,normal,True,True,seed_file
+600196,Fosun Pharma,SH,main_board,normal,True,True,seed_file
+600406,NARI Technology,SH,main_board,normal,True,True,seed_file
+002050,Sanhua Intelligent,SZ,main_board,normal,True,True,seed_file
+601601,China Pacific Insurance,SH,main_board,normal,True,True,seed_file
+601728,China Telecom,SH,main_board,normal,True,True,seed_file
+600886,SDIC Power,SH,main_board,normal,True,True,seed_file
+601985,China National Nuclear Power,SH,main_board,normal,True,True,seed_file
+600233,YTO Express,SH,main_board,normal,True,True,seed_file
+603986,GigaDevice,SH,main_board,normal,True,True,seed_file
+603799,Huayou Cobalt,SH,main_board,normal,True,True,seed_file
+688111,Kingsoft Office,SH,star_market,normal,True,True,seed_file
+600489,Zhongjin Gold,SH,main_board,normal,True,True,seed_file
+601225,Shaanxi Coal,SH,main_board,normal,True,True,seed_file
+601857,PetroChina,SH,main_board,normal,True,True,seed_file
+600028,China Petroleum & Chemical,SH,main_board,normal,True,True,seed_file
+600050,China Unicom,SH,main_board,normal,True,True,seed_file
+601658,Postal Savings Bank of China,SH,main_board,normal,True,True,seed_file
+601138,Foxconn Industrial Internet,SH,main_board,normal,True,True,seed_file
+603260,Hoshine Silicon,SH,main_board,normal,True,True,seed_file
+603882,Golden Home,SH,main_board,normal,True,True,seed_file
+603369,Jiangsu King's Luck Brewery,SH,main_board,normal,True,True,seed_file
+002027,Focus Media,SZ,main_board,normal,True,True,seed_file
+002371,NAURA Technology Group,SZ,main_board,normal,True,True,seed_file
+002271,Oriental Yuhong,SZ,main_board,normal,True,True,seed_file
+002460,Ganfeng Lithium,SZ,main_board,normal,True,True,seed_file
+002475,Luxshare Precision,SZ,main_board,normal,True,True,seed_file
+002493,Rongsheng Petrochemical,SZ,main_board,normal,True,True,seed_file
+300122,Chongqing Zhifei Biological,SZ,chinext,normal,True,True,seed_file
+300316,Crystal-Optech,SZ,chinext,normal,True,True,seed_file
+300347,Topchoice Medical,SZ,chinext,normal,True,True,seed_file
+300413,Mango Excellent Media,SZ,chinext,normal,True,True,seed_file
+300450,LEAD Intelligent,SZ,chinext,normal,True,True,seed_file
+300496,Sinocare,SZ,chinext,normal,True,True,seed_file
+300628,Yiheda Automation,SZ,chinext,normal,True,True,seed_file
+300759,Pharmaron Beijing,SZ,chinext,normal,True,True,seed_file
+600009,600009,SH,main_board,normal,True,True,seed_file
+600011,600011,SH,main_board,normal,True,True,seed_file
+600025,600025,SH,main_board,normal,True,True,seed_file
+600029,600029,SH,main_board,normal,True,True,seed_file
+600085,600085,SH,main_board,normal,True,True,seed_file
+600115,600115,SH,main_board,normal,True,True,seed_file
+600150,600150,SH,main_board,normal,True,True,seed_file
+600161,600161,SH,main_board,normal,True,True,seed_file
+600332,600332,SH,main_board,normal,True,True,seed_file
+600346,600346,SH,main_board,normal,True,True,seed_file
+600352,600352,SH,main_board,normal,True,True,seed_file
+600372,600372,SH,main_board,normal,True,True,seed_file
+600436,600436,SH,main_board,normal,True,True,seed_file
+600660,600660,SH,main_board,normal,True,True,seed_file
+600745,600745,SH,main_board,normal,True,True,seed_file
+600760,600760,SH,main_board,normal,True,True,seed_file
+600809,600809,SH,main_board,normal,True,True,seed_file
+600845,600845,SH,main_board,normal,True,True,seed_file
+600919,600919,SH,main_board,normal,True,True,seed_file
+600938,600938,SH,main_board,normal,True,True,seed_file
+600989,600989,SH,main_board,normal,True,True,seed_file
+601019,601019,SH,main_board,normal,True,True,seed_file
+601066,601066,SH,main_board,normal,True,True,seed_file
+601111,601111,SH,main_board,normal,True,True,seed_file
+601117,601117,SH,main_board,normal,True,True,seed_file
+601169,601169,SH,main_board,normal,True,True,seed_file
+601186,601186,SH,main_board,normal,True,True,seed_file
+601211,601211,SH,main_board,normal,True,True,seed_file
+601229,601229,SH,main_board,normal,True,True,seed_file
+601336,601336,SH,main_board,normal,True,True,seed_file
+601390,601390,SH,main_board,normal,True,True,seed_file
+601600,601600,SH,main_board,normal,True,True,seed_file
+601607,601607,SH,main_board,normal,True,True,seed_file
+601628,601628,SH,main_board,normal,True,True,seed_file
+601633,601633,SH,main_board,normal,True,True,seed_file
+601668,601668,SH,main_board,normal,True,True,seed_file
+601688,601688,SH,main_board,normal,True,True,seed_file
+601689,601689,SH,main_board,normal,True,True,seed_file
+601698,601698,SH,main_board,normal,True,True,seed_file
+601816,601816,SH,main_board,normal,True,True,seed_file
+601818,601818,SH,main_board,normal,True,True,seed_file
+601838,601838,SH,main_board,normal,True,True,seed_file
+601865,601865,SH,main_board,normal,True,True,seed_file
+601888,601888,SH,main_board,normal,True,True,seed_file
+603195,603195,SH,main_board,normal,True,True,seed_file
+603392,603392,SH,main_board,normal,True,True,seed_file
+603659,603659,SH,main_board,normal,True,True,seed_file
+603806,603806,SH,main_board,normal,True,True,seed_file
+603833,603833,SH,main_board,normal,True,True,seed_file
+603899,603899,SH,main_board,normal,True,True,seed_file
+300014,300014,SZ,chinext,normal,True,True,seed_file
+300024,300024,SZ,chinext,normal,True,True,seed_file
+300274,300274,SZ,chinext,normal,True,True,seed_file
+300285,300285,SZ,chinext,normal,True,True,seed_file
+300363,300363,SZ,chinext,normal,True,True,seed_file
+300454,300454,SZ,chinext,normal,True,True,seed_file
+300498,300498,SZ,chinext,normal,True,True,seed_file
+300529,300529,SZ,chinext,normal,True,True,seed_file
+300595,300595,SZ,chinext,normal,True,True,seed_file
+300661,300661,SZ,chinext,normal,True,True,seed_file
+300751,300751,SZ,chinext,normal,True,True,seed_file
+300763,300763,SZ,chinext,normal,True,True,seed_file
+300782,300782,SZ,chinext,normal,True,True,seed_file
+300832,300832,SZ,chinext,normal,True,True,seed_file
+300896,300896,SZ,chinext,normal,True,True,seed_file
+000002,000002,SZ,main_board,normal,True,True,seed_file
+000100,000100,SZ,main_board,normal,True,True,seed_file
+000157,000157,SZ,main_board,normal,True,True,seed_file
+000166,000166,SZ,main_board,normal,True,True,seed_file
+000301,000301,SZ,main_board,normal,True,True,seed_file
+000338,000338,SZ,main_board,normal,True,True,seed_file
+000596,000596,SZ,main_board,normal,True,True,seed_file
+000625,000625,SZ,main_board,normal,True,True,seed_file
+000768,000768,SZ,main_board,normal,True,True,seed_file
+000776,000776,SZ,main_board,normal,True,True,seed_file
+000786,000786,SZ,main_board,normal,True,True,seed_file
+000792,000792,SZ,main_board,normal,True,True,seed_file
+000895,000895,SZ,main_board,normal,True,True,seed_file
+000938,000938,SZ,main_board,normal,True,True,seed_file
+000963,000963,SZ,main_board,normal,True,True,seed_file
+001979,001979,SZ,main_board,normal,True,True,seed_file
+002001,002001,SZ,main_board,normal,True,True,seed_file
+002007,002007,SZ,main_board,normal,True,True,seed_file
+002008,002008,SZ,main_board,normal,True,True,seed_file
+002028,002028,SZ,main_board,normal,True,True,seed_file
+002049,002049,SZ,main_board,normal,True,True,seed_file
+002074,002074,SZ,main_board,normal,True,True,seed_file
+002129,002129,SZ,main_board,normal,True,True,seed_file
+002202,002202,SZ,main_board,normal,True,True,seed_file
+002230,002230,SZ,main_board,normal,True,True,seed_file
+002236,002236,SZ,main_board,normal,True,True,seed_file
+002241,002241,SZ,main_board,normal,True,True,seed_file
+002294,002294,SZ,main_board,normal,True,True,seed_file
+002352,002352,SZ,main_board,normal,True,True,seed_file
+002385,002385,SZ,main_board,normal,True,True,seed_file
+002410,002410,SZ,main_board,normal,True,True,seed_file
+002414,002414,SZ,main_board,normal,True,True,seed_file
+002422,002422,SZ,main_board,normal,True,True,seed_file
+002555,002555,SZ,main_board,normal,True,True,seed_file
+002601,002601,SZ,main_board,normal,True,True,seed_file
+002603,002603,SZ,main_board,normal,True,True,seed_file
+002624,002624,SZ,main_board,normal,True,True,seed_file
+002648,002648,SZ,main_board,normal,True,True,seed_file
+002709,002709,SZ,main_board,normal,True,True,seed_file
+002773,002773,SZ,main_board,normal,True,True,seed_file
+002812,002812,SZ,main_board,normal,True,True,seed_file
+002916,002916,SZ,main_board,normal,True,True,seed_file
+002920,002920,SZ,main_board,normal,True,True,seed_file
+002938,002938,SZ,main_board,normal,True,True,seed_file
+003816,003816,SZ,main_board,normal,True,True,seed_file
+003986,003986,SZ,main_board,normal,True,True,seed_file
+300003,300003,SZ,chinext,normal,True,True,seed_file
+300015,300015,SZ,chinext,normal,True,True,seed_file
+300033,300033,SZ,chinext,normal,True,True,seed_file
+300118,300118,SZ,chinext,normal,True,True,seed_file
+300124,300124,SZ,chinext,normal,True,True,seed_file
+300223,300223,SZ,chinext,normal,True,True,seed_file
+300285,300285,SZ,chinext,normal,True,True,seed_file
+300408,300408,SZ,chinext,normal,True,True,seed_file
+300413,300413,SZ,chinext,normal,True,True,seed_file
+300454,300454,SZ,chinext,normal,True,True,seed_file
+300595,300595,SZ,chinext,normal,True,True,seed_file
+300724,300724,SZ,chinext,normal,True,True,seed_file
+300750,300750,SZ,chinext,normal,True,True,seed_file
+300760,300760,SZ,chinext,normal,True,True,seed_file
+300850,300850,SZ,chinext,normal,True,True,seed_file
+300957,300957,SZ,chinext,normal,True,True,seed_file
+600000,600000,SH,main_board,normal,True,True,seed_file
+600015,600015,SH,main_board,normal,True,True,seed_file
+600016,600016,SH,main_board,normal,True,True,seed_file
+600018,600018,SH,main_board,normal,True,True,seed_file
+600019,600019,SH,main_board,normal,True,True,seed_file
+600030,600030,SH,main_board,normal,True,True,seed_file
+600031,600031,SH,main_board,normal,True,True,seed_file
+600036,600036,SH,main_board,normal,True,True,seed_file
+600048,600048,SH,main_board,normal,True,True,seed_file
+600104,600104,SH,main_board,normal,True,True,seed_file
+600111,600111,SH,main_board,normal,True,True,seed_file
+600132,600132,SH,main_board,normal,True,True,seed_file
+600183,600183,SH,main_board,normal,True,True,seed_file
+600219,600219,SH,main_board,normal,True,True,seed_file
+600276,600276,SH,main_board,normal,True,True,seed_file
+600298,600298,SH,main_board,normal,True,True,seed_file
+600309,600309,SH,main_board,normal,True,True,seed_file
+600340,600340,SH,main_board,normal,True,True,seed_file
+600406,600406,SH,main_board,normal,True,True,seed_file
+600438,600438,SH,main_board,normal,True,True,seed_file
+600547,600547,SH,main_board,normal,True,True,seed_file
+600570,600570,SH,main_board,normal,True,True,seed_file
+600588,600588,SH,main_board,normal,True,True,seed_file
+600703,600703,SH,main_board,normal,True,True,seed_file
+600741,600741,SH,main_board,normal,True,True,seed_file
+600837,600837,SH,main_board,normal,True,True,seed_file
+600893,600893,SH,main_board,normal,True,True,seed_file
+600999,600999,SH,main_board,normal,True,True,seed_file
+601009,601009,SH,main_board,normal,True,True,seed_file
+601012,601012,SH,main_board,normal,True,True,seed_file
+601088,601088,SH,main_board,normal,True,True,seed_file
+601166,601166,SH,main_board,normal,True,True,seed_file
+601216,601216,SH,main_board,normal,True,True,seed_file
+601318,601318,SH,main_board,normal,True,True,seed_file
+601328,601328,SH,main_board,normal,True,True,seed_file
+601398,601398,SH,main_board,normal,True,True,seed_file
+601601,601601,SH,main_board,normal,True,True,seed_file
+601668,601668,SH,main_board,normal,True,True,seed_file
+601688,601688,SH,main_board,normal,True,True,seed_file
+601818,601818,SH,main_board,normal,True,True,seed_file
+601857,601857,SH,main_board,normal,True,True,seed_file
+601888,601888,SH,main_board,normal,True,True,seed_file
+601899,601899,SH,main_board,normal,True,True,seed_file
+601919,601919,SH,main_board,normal,True,True,seed_file
+601939,601939,SH,main_board,normal,True,True,seed_file
+601985,601985,SH,main_board,normal,True,True,seed_file
+603019,603019,SH,main_board,normal,True,True,seed_file
+603259,603259,SH,main_board,normal,True,True,seed_file
+603288,603288,SH,main_board,normal,True,True,seed_file
+603501,603501,SH,main_board,normal,True,True,seed_file
+603799,603799,SH,main_board,normal,True,True,seed_file
+603986,603986,SH,main_board,normal,True,True,seed_file
+000402,000402,SZ,main_board,normal,True,True,seed_file
+000423,000423,SZ,main_board,normal,True,True,seed_file
+000538,000538,SZ,main_board,normal,True,True,seed_file
+000623,000623,SZ,main_board,normal,True,True,seed_file
+000708,000708,SZ,main_board,normal,True,True,seed_file
+000723,000723,SZ,main_board,normal,True,True,seed_file
+000733,000733,SZ,main_board,normal,True,True,seed_file
+000876,000876,SZ,main_board,normal,True,True,seed_file
+000977,000977,SZ,main_board,normal,True,True,seed_file
+001289,001289,SZ,main_board,normal,True,True,seed_file
+002007,002007,SZ,main_board,normal,True,True,seed_file
+002064,002064,SZ,main_board,normal,True,True,seed_file
+002128,002128,SZ,main_board,normal,True,True,seed_file
+002142,002142,SZ,main_board,normal,True,True,seed_file
+002179,002179,SZ,main_board,normal,True,True,seed_file
+002304,002304,SZ,main_board,normal,True,True,seed_file
+002463,002463,SZ,main_board,normal,True,True,seed_file
+002594,002594,SZ,main_board,normal,True,True,seed_file
+002714,002714,SZ,main_board,normal,True,True,seed_file
+002821,002821,SZ,main_board,normal,True,True,seed_file
+300394,300394,SZ,chinext,normal,True,True,seed_file
+300433,300433,SZ,chinext,normal,True,True,seed_file
+300529,300529,SZ,chinext,normal,True,True,seed_file
+300601,300601,SZ,chinext,normal,True,True,seed_file
+300673,300673,SZ,chinext,normal,True,True,seed_file
+300677,300677,SZ,chinext,normal,True,True,seed_file
+300866,300866,SZ,chinext,normal,True,True,seed_file
+301029,301029,SZ,chinext,normal,True,True,seed_file
+301269,301269,SZ,chinext,normal,True,True,seed_file
+603659,603659,SH,main_board,normal,True,True,seed_file

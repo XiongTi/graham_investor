@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wealthkeeper"
+version = "0.1.0"
+description = "Multi-market value investing screener, portfolio tracker, and trade journal."
+requires-python = ">=3.9"
+dependencies = [
+    "yfinance",
+    "pandas",
+]
+
+[project.scripts]
+ws = "wealthkeeper.cli:main"
+
+[tool.setuptools]
+packages = ["wealthkeeper"]

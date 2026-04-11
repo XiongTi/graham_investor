@@ -1,0 +1,290 @@
+ticker,name,exchange,board,status,is_active,is_common_stock,source
+AAPL,Apple,NMS,main_board,normal,True,True,seed_file
+MSFT,Microsoft,NMS,main_board,normal,True,True,seed_file
+GOOGL,Alphabet,NMS,main_board,normal,True,True,seed_file
+JNJ,Johnson & Johnson,NYQ,main_board,normal,True,True,seed_file
+PG,Procter & Gamble,NYQ,main_board,normal,True,True,seed_file
+KO,Coca-Cola,NYQ,main_board,normal,True,True,seed_file
+PEP,PepsiCo,NMS,main_board,normal,True,True,seed_file
+WMT,Walmart,NYQ,main_board,normal,True,True,seed_file
+JPM,JPMorgan Chase,NYQ,main_board,normal,True,True,seed_file
+BAC,Bank of America,NYQ,main_board,normal,True,True,seed_file
+XOM,Exxon Mobil,NYQ,main_board,normal,True,True,seed_file
+CVX,Chevron,NYQ,main_board,normal,True,True,seed_file
+UNH,UnitedHealth Group,NYQ,main_board,normal,True,True,seed_file
+HD,Home Depot,NYQ,main_board,normal,True,True,seed_file
+BRK-B,Berkshire Hathaway,NYQ,main_board,normal,True,True,seed_file
+INTC,Intel,NMS,main_board,normal,True,True,seed_file
+VZ,Verizon,NYQ,main_board,normal,True,True,seed_file
+T,AT&T,NYQ,main_board,normal,True,True,seed_file
+IBM,IBM,NYQ,main_board,normal,True,True,seed_file
+MMM,3M,NYQ,main_board,normal,True,True,seed_file
+CAT,Caterpillar,NYQ,main_board,normal,True,True,seed_file
+GE,GE Aerospace,NYQ,main_board,normal,True,True,seed_file
+F,Ford,NYQ,main_board,normal,True,True,seed_file
+GM,General Motors,NYQ,main_board,normal,True,True,seed_file
+MRK,Merck,NYQ,main_board,normal,True,True,seed_file
+PFE,Pfizer,NYQ,main_board,normal,True,True,seed_file
+ABBV,AbbVie,NYQ,main_board,normal,True,True,seed_file
+BMY,Bristol Myers Squibb,NYQ,main_board,normal,True,True,seed_file
+MCD,McDonald's,NYQ,main_board,normal,True,True,seed_file
+NKE,Nike,NYQ,main_board,normal,True,True,seed_file
+DIS,Disney,NYQ,main_board,normal,True,True,seed_file
+COST,Costco,NMS,main_board,normal,True,True,seed_file
+LOW,Lowe's,NYQ,main_board,normal,True,True,seed_file
+TGT,Target,NYQ,main_board,normal,True,True,seed_file
+CL,Colgate-Palmolive,NYQ,main_board,normal,True,True,seed_file
+GIS,General Mills,NYQ,main_board,normal,True,True,seed_file
+K,Kellanova,NYQ,main_board,normal,True,True,seed_file
+SJM,JM Smucker,NYQ,main_board,normal,True,True,seed_file
+HRL,Hormel,NYQ,main_board,normal,True,True,seed_file
+ADM,Archer Daniels Midland,NYQ,main_board,normal,True,True,seed_file
+DE,Deere,NYQ,main_board,normal,True,True,seed_file
+EMR,Emerson Electric,NYQ,main_board,normal,True,True,seed_file
+CSCO,Cisco,NMS,main_board,normal,True,True,seed_file
+ORCL,Oracle,NYQ,main_board,normal,True,True,seed_file
+QCOM,Qualcomm,NMS,main_board,normal,True,True,seed_file
+TXN,Texas Instruments,NMS,main_board,normal,True,True,seed_file
+AMD,AMD,NMS,main_board,normal,True,True,seed_file
+AMGN,Amgen,NMS,main_board,normal,True,True,seed_file
+GILD,Gilead,NMS,main_board,normal,True,True,seed_file
+ABT,Abbott Laboratories,NYQ,main_board,normal,True,True,seed_file
+MDT,Medtronic,NYQ,main_board,normal,True,True,seed_file
+SYK,Stryker,NYQ,main_board,normal,True,True,seed_file
+DHR,Danaher,NYQ,main_board,normal,True,True,seed_file
+LIN,Linde,NMS,main_board,normal,True,True,seed_file
+APD,Air Products,NYQ,main_board,normal,True,True,seed_file
+SHW,Sherwin-Williams,NYQ,main_board,normal,True,True,seed_file
+ECL,Ecolab,NYQ,main_board,normal,True,True,seed_file
+CMI,Cummins,NYQ,main_board,normal,True,True,seed_file
+UNP,Union Pacific,NYQ,main_board,normal,True,True,seed_file
+NSC,Norfolk Southern,NYQ,main_board,normal,True,True,seed_file
+CSX,CSX,NMS,main_board,normal,True,True,seed_file
+RTX,RTX,NYQ,main_board,normal,True,True,seed_file
+LMT,Lockheed Martin,NYQ,main_board,normal,True,True,seed_file
+GD,General Dynamics,NYQ,main_board,normal,True,True,seed_file
+HON,Honeywell,NMS,main_board,normal,True,True,seed_file
+UPS,UPS,NYQ,main_board,normal,True,True,seed_file
+FDX,FedEx,NYQ,main_board,normal,True,True,seed_file
+O,Realty Income,NYQ,main_board,normal,True,True,seed_file
+SPG,Simon Property Group,NYQ,main_board,normal,True,True,seed_file
+PSA,Public Storage,NYQ,main_board,normal,True,True,seed_file
+WELL,Welltower,NYQ,main_board,normal,True,True,seed_file
+CB,Chubb,NYQ,main_board,normal,True,True,seed_file
+AFL,Aflac,NYQ,main_board,normal,True,True,seed_file
+PGR,Progressive,NYQ,main_board,normal,True,True,seed_file
+C,Citigroup,NYQ,main_board,normal,True,True,seed_file
+USB,U.S. Bancorp,NYQ,main_board,normal,True,True,seed_file
+BK,BNY Mellon,NYQ,main_board,normal,True,True,seed_file
+MET,MetLife,NYQ,main_board,normal,True,True,seed_file
+PRU,Prudential Financial,NYQ,main_board,normal,True,True,seed_file
+MS,Morgan Stanley,NYQ,main_board,normal,True,True,seed_file
+GS,Goldman Sachs,NYQ,main_board,normal,True,True,seed_file
+BLK,BlackRock,NYQ,main_board,normal,True,True,seed_file
+SCHW,Charles Schwab,NYQ,main_board,normal,True,True,seed_file
+TFC,Truist Financial,NYQ,main_board,normal,True,True,seed_file
+PNC,PNC Financial,NYQ,main_board,normal,True,True,seed_file
+MCO,Moody's,NYQ,main_board,normal,True,True,seed_file
+ICE,Intercontinental Exchange,NYQ,main_board,normal,True,True,seed_file
+AJG,Arthur J Gallagher,NYQ,main_board,normal,True,True,seed_file
+MMC,Marsh McLennan,NYQ,main_board,normal,True,True,seed_file
+AON,Aon,NYQ,main_board,normal,True,True,seed_file
+WM,Waste Management,NYQ,main_board,normal,True,True,seed_file
+RSG,Republic Services,NYQ,main_board,normal,True,True,seed_file
+CTAS,Cintas,NMS,main_board,normal,True,True,seed_file
+ROP,Roper Technologies,NMS,main_board,normal,True,True,seed_file
+ITW,Illinois Tool Works,NYQ,main_board,normal,True,True,seed_file
+PH,Parker-Hannifin,NYQ,main_board,normal,True,True,seed_file
+ETN,Eaton,NYQ,main_board,normal,True,True,seed_file
+TT,Trane Technologies,NYQ,main_board,normal,True,True,seed_file
+JCI,Johnson Controls,NYQ,main_board,normal,True,True,seed_file
+NOC,Northrop Grumman,NYQ,main_board,normal,True,True,seed_file
+BA,Boeing,NYQ,main_board,normal,True,True,seed_file
+GEV,GE Vernova,NYQ,main_board,normal,True,True,seed_file
+MMM,3M,NYQ,main_board,normal,True,True,seed_file
+ADP,Automatic Data Processing,NMS,main_board,normal,True,True,seed_file
+PAYX,Paychex,NMS,main_board,normal,True,True,seed_file
+FIS,Fidelity National Information,NYQ,main_board,normal,True,True,seed_file
+FISV,Fiserv,NYQ,main_board,normal,True,True,seed_file
+INTU,Intuit,NMS,main_board,normal,True,True,seed_file
+SPGI,S&P Global,NYQ,main_board,normal,True,True,seed_file
+MCK,McKesson,NYQ,main_board,normal,True,True,seed_file
+CAH,Cardinal Health,NYQ,main_board,normal,True,True,seed_file
+COR,Cencora,NYQ,main_board,normal,True,True,seed_file
+CI,Cigna,NYQ,main_board,normal,True,True,seed_file
+ELV,Elevance Health,NYQ,main_board,normal,True,True,seed_file
+HCA,HCA Healthcare,NYQ,main_board,normal,True,True,seed_file
+ISRG,Intuitive Surgical,NMS,main_board,normal,True,True,seed_file
+REGN,Regeneron,NMS,main_board,normal,True,True,seed_file
+VRTX,Vertex Pharmaceuticals,NMS,main_board,normal,True,True,seed_file
+BSX,Boston Scientific,NYQ,main_board,normal,True,True,seed_file
+EW,Edwards Lifesciences,NYQ,main_board,normal,True,True,seed_file
+ZTS,Zoetis,NYQ,main_board,normal,True,True,seed_file
+MO,Altria,NYQ,main_board,normal,True,True,seed_file
+PM,Philip Morris,NYQ,main_board,normal,True,True,seed_file
+MDLZ,Mondelez,NMS,main_board,normal,True,True,seed_file
+SBUX,Starbucks,NMS,main_board,normal,True,True,seed_file
+CMG,Chipotle,NMS,main_board,normal,True,True,seed_file
+YUM,Yum Brands,NYQ,main_board,normal,True,True,seed_file
+MAR,Marriott,NMS,main_board,normal,True,True,seed_file
+HLT,Hilton,NMS,main_board,normal,True,True,seed_file
+BKNG,Booking Holdings,NMS,main_board,normal,True,True,seed_file
+TJX,TJX,NYQ,main_board,normal,True,True,seed_file
+ROST,Ross Stores,NMS,main_board,normal,True,True,seed_file
+DG,Dollar General,NYQ,main_board,normal,True,True,seed_file
+DLTR,Dollar Tree,NMS,main_board,normal,True,True,seed_file
+ACN,ACN,NYQ,main_board,normal,True,True,seed_file
+AMAT,AMAT,NMS,main_board,normal,True,True,seed_file
+ADI,ADI,NMS,main_board,normal,True,True,seed_file
+ANET,ANET,NYQ,main_board,normal,True,True,seed_file
+ASML,ASML,NMS,main_board,normal,True,True,seed_file
+AVGO,AVGO,NMS,main_board,normal,True,True,seed_file
+CDNS,CDNS,NMS,main_board,normal,True,True,seed_file
+CRWD,CRWD,NMS,main_board,normal,True,True,seed_file
+DELL,DELL,NYQ,main_board,normal,True,True,seed_file
+FTNT,FTNT,NMS,main_board,normal,True,True,seed_file
+HPE,HPE,NYQ,main_board,normal,True,True,seed_file
+HPQ,HPQ,NYQ,main_board,normal,True,True,seed_file
+KLAC,KLAC,NMS,main_board,normal,True,True,seed_file
+LRCX,LRCX,NMS,main_board,normal,True,True,seed_file
+MU,MU,NMS,main_board,normal,True,True,seed_file
+NXPI,NXPI,NMS,main_board,normal,True,True,seed_file
+ON,ON,NMS,main_board,normal,True,True,seed_file
+PANW,PANW,NMS,main_board,normal,True,True,seed_file
+PLTR,PLTR,NMS,main_board,normal,True,True,seed_file
+SNPS,SNPS,NMS,main_board,normal,True,True,seed_file
+TEAM,TEAM,NMS,main_board,normal,True,True,seed_file
+WDAY,WDAY,NMS,main_board,normal,True,True,seed_file
+WDC,WDC,NMS,main_board,normal,True,True,seed_file
+AEP,AEP,NMS,main_board,normal,True,True,seed_file
+AEE,AEE,NYQ,main_board,normal,True,True,seed_file
+AES,AES,NYQ,main_board,normal,True,True,seed_file
+AWK,AWK,NYQ,main_board,normal,True,True,seed_file
+D,D,NYQ,main_board,normal,True,True,seed_file
+DUK,DUK,NYQ,main_board,normal,True,True,seed_file
+ED,ED,NYQ,main_board,normal,True,True,seed_file
+EIX,EIX,NYQ,main_board,normal,True,True,seed_file
+EXC,EXC,NMS,main_board,normal,True,True,seed_file
+NEE,NEE,NYQ,main_board,normal,True,True,seed_file
+PCG,PCG,NYQ,main_board,normal,True,True,seed_file
+PEG,PEG,NYQ,main_board,normal,True,True,seed_file
+SRE,SRE,NYQ,main_board,normal,True,True,seed_file
+SO,SO,NYQ,main_board,normal,True,True,seed_file
+VST,VST,NYQ,main_board,normal,True,True,seed_file
+XEL,XEL,NMS,main_board,normal,True,True,seed_file
+COP,COP,NYQ,main_board,normal,True,True,seed_file
+CVS,CVS,NYQ,main_board,normal,True,True,seed_file
+EOG,EOG,NYQ,main_board,normal,True,True,seed_file
+MPC,MPC,NYQ,main_board,normal,True,True,seed_file
+OKE,OKE,NYQ,main_board,normal,True,True,seed_file
+OXY,OXY,NYQ,main_board,normal,True,True,seed_file
+PSX,PSX,NYQ,main_board,normal,True,True,seed_file
+SLB,SLB,NYQ,main_board,normal,True,True,seed_file
+WMB,WMB,NYQ,main_board,normal,True,True,seed_file
+XOM,XOM,NYQ,main_board,normal,True,True,seed_file
+AIG,AIG,NYQ,main_board,normal,True,True,seed_file
+ALL,ALL,NYQ,main_board,normal,True,True,seed_file
+AMP,AMP,NYQ,main_board,normal,True,True,seed_file
+BAC,BAC,NYQ,main_board,normal,True,True,seed_file
+BEN,BEN,NYQ,main_board,normal,True,True,seed_file
+BX,BX,NYQ,main_board,normal,True,True,seed_file
+COF,COF,NYQ,main_board,normal,True,True,seed_file
+DFS,DFS,NYQ,main_board,normal,True,True,seed_file
+FDS,FDS,NYQ,main_board,normal,True,True,seed_file
+FITB,FITB,NMS,main_board,normal,True,True,seed_file
+HBAN,HBAN,NMS,main_board,normal,True,True,seed_file
+IVZ,IVZ,NYQ,main_board,normal,True,True,seed_file
+KEY,KEY,NYQ,main_board,normal,True,True,seed_file
+KKR,KKR,NYQ,main_board,normal,True,True,seed_file
+MTB,MTB,NYQ,main_board,normal,True,True,seed_file
+NTRS,NTRS,NMS,main_board,normal,True,True,seed_file
+RJF,RJF,NYQ,main_board,normal,True,True,seed_file
+RF,RF,NYQ,main_board,normal,True,True,seed_file
+STT,STT,NYQ,main_board,normal,True,True,seed_file
+TRV,TRV,NYQ,main_board,normal,True,True,seed_file
+A,Agilent,NYQ,main_board,normal,True,True,seed_file
+ALGN,ALGN,NMS,main_board,normal,True,True,seed_file
+BAX,BAX,NYQ,main_board,normal,True,True,seed_file
+BIIB,BIIB,NMS,main_board,normal,True,True,seed_file
+BMY,BMY,NYQ,main_board,normal,True,True,seed_file
+CVS,CVS,NYQ,main_board,normal,True,True,seed_file
+GEHC,GEHC,NMS,main_board,normal,True,True,seed_file
+HUM,HUM,NYQ,main_board,normal,True,True,seed_file
+IDXX,IDXX,NMS,main_board,normal,True,True,seed_file
+IQV,IQV,NYQ,main_board,normal,True,True,seed_file
+LH,LH,NYQ,main_board,normal,True,True,seed_file
+LLY,LLY,NYQ,main_board,normal,True,True,seed_file
+MRNA,MRNA,NMS,main_board,normal,True,True,seed_file
+MTD,MTD,NYQ,main_board,normal,True,True,seed_file
+RMD,RMD,NYQ,main_board,normal,True,True,seed_file
+STE,STE,NYQ,main_board,normal,True,True,seed_file
+TMO,TMO,NYQ,main_board,normal,True,True,seed_file
+VEEV,VEEV,NMS,main_board,normal,True,True,seed_file
+WAT,WAT,NYQ,main_board,normal,True,True,seed_file
+BDX,BDX,NYQ,main_board,normal,True,True,seed_file
+CHD,CHD,NYQ,main_board,normal,True,True,seed_file
+CLX,CLX,NYQ,main_board,normal,True,True,seed_file
+COST,COST,NMS,main_board,normal,True,True,seed_file
+CPB,CPB,NMS,main_board,normal,True,True,seed_file
+EL,EL,NYQ,main_board,normal,True,True,seed_file
+GIS,GIS,NYQ,main_board,normal,True,True,seed_file
+HSY,HSY,NYQ,main_board,normal,True,True,seed_file
+KDP,KDP,NMS,main_board,normal,True,True,seed_file
+KHC,KHC,NMS,main_board,normal,True,True,seed_file
+KMB,KMB,NYQ,main_board,normal,True,True,seed_file
+KR,KR,NYQ,main_board,normal,True,True,seed_file
+MNST,MNST,NMS,main_board,normal,True,True,seed_file
+PEP,PEP,NMS,main_board,normal,True,True,seed_file
+PG,PG,NYQ,main_board,normal,True,True,seed_file
+SYY,SYY,NYQ,main_board,normal,True,True,seed_file
+WBA,WBA,NMS,main_board,normal,True,True,seed_file
+WMT,WMT,NYQ,main_board,normal,True,True,seed_file
+ABNB,ABNB,NMS,main_board,normal,True,True,seed_file
+ADBE,ADBE,NMS,main_board,normal,True,True,seed_file
+APP,APP,NMS,main_board,normal,True,True,seed_file
+ARM,ARM,NMS,main_board,normal,True,True,seed_file
+AXP,AXP,NYQ,main_board,normal,True,True,seed_file
+BKNG,BKNG,NMS,main_board,normal,True,True,seed_file
+CARR,CARR,NYQ,main_board,normal,True,True,seed_file
+CMCSA,CMCSA,NMS,main_board,normal,True,True,seed_file
+CPRT,CPRT,NMS,main_board,normal,True,True,seed_file
+DASH,DASH,NMS,main_board,normal,True,True,seed_file
+DDOG,DDOG,NMS,main_board,normal,True,True,seed_file
+EBAY,EBAY,NMS,main_board,normal,True,True,seed_file
+FAST,FAST,NMS,main_board,normal,True,True,seed_file
+FI,FI,NYQ,main_board,normal,True,True,seed_file
+GWW,GWW,NYQ,main_board,normal,True,True,seed_file
+HD,HD,NYQ,main_board,normal,True,True,seed_file
+KMI,KMI,NYQ,main_board,normal,True,True,seed_file
+LEN,LEN,NYQ,main_board,normal,True,True,seed_file
+LOW,LOW,NYQ,main_board,normal,True,True,seed_file
+LULU,LULU,NMS,main_board,normal,True,True,seed_file
+MELI,MELI,NMS,main_board,normal,True,True,seed_file
+MRVL,MRVL,NMS,main_board,normal,True,True,seed_file
+NFLX,NFLX,NMS,main_board,normal,True,True,seed_file
+ORLY,ORLY,NMS,main_board,normal,True,True,seed_file
+PDD,PDD,NMS,main_board,normal,True,True,seed_file
+PINS,PINS,NYQ,main_board,normal,True,True,seed_file
+PYPL,PYPL,NMS,main_board,normal,True,True,seed_file
+RBLX,RBLX,NYQ,main_board,normal,True,True,seed_file
+RDDT,RDDT,NYQ,main_board,normal,True,True,seed_file
+SHOP,SHOP,NYQ,main_board,normal,True,True,seed_file
+SQ,SQ,NYQ,main_board,normal,True,True,seed_file
+TSLA,TSLA,NMS,main_board,normal,True,True,seed_file
+UBER,UBER,NYQ,main_board,normal,True,True,seed_file
+V,V,NYQ,main_board,normal,True,True,seed_file
+VICI,VICI,NYQ,main_board,normal,True,True,seed_file
+VMC,VMC,NYQ,main_board,normal,True,True,seed_file
+VRSK,VRSK,NMS,main_board,normal,True,True,seed_file
+WCN,WCN,NYQ,main_board,normal,True,True,seed_file
+WDAY,WDAY,NMS,main_board,normal,True,True,seed_file
+XYL,XYL,NYQ,main_board,normal,True,True,seed_file
+INVA,Innoviva,NMS,main_board,normal,True,True,seed_file
+JHG,Janus Henderson Group,NYQ,main_board,normal,True,True,seed_file
+LUXE,LuxExperience,NMS,main_board,normal,True,True,seed_file
+PAGS,PagSeguro Digital,NYQ,main_board,normal,True,True,seed_file
+RCI,Rogers Communications,NYQ,main_board,normal,True,True,seed_file
+SLDE,Slide Insurance Holdings,NMS,main_board,normal,True,True,seed_file
+STNG,Scorpio Tankers,NYQ,main_board,normal,True,True,seed_file
+TROW,T. Rowe Price Group,NMS,main_board,normal,True,True,seed_file
+TSLX,Sixth Street Specialty Lending,NYQ,main_board,normal,True,True,seed_file

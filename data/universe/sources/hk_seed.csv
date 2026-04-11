@@ -1,0 +1,258 @@
+ticker,name,exchange,board,status,is_active,is_common_stock,source
+0700,Tencent,HKEX,main_board,normal,True,True,seed_file
+9988,Alibaba-W,HKEX,main_board,normal,True,True,seed_file
+09618,JD.com,HKEX,main_board,normal,True,True,seed_file
+1810,Xiaomi,HKEX,main_board,normal,True,True,seed_file
+0005,HSBC Holdings,HKEX,main_board,normal,True,True,seed_file
+0388,HKEX,HKEX,main_board,normal,True,True,seed_file
+0941,China Mobile,HKEX,main_board,normal,True,True,seed_file
+0883,CNOOC,HKEX,main_board,normal,True,True,seed_file
+0001,CK Hutchison,HKEX,main_board,normal,True,True,seed_file
+2318,Ping An,HKEX,main_board,normal,True,True,seed_file
+2388,BOC Hong Kong,HKEX,main_board,normal,True,True,seed_file
+1109,China Resources Land,HKEX,main_board,normal,True,True,seed_file
+0688,China Overseas,HKEX,main_board,normal,True,True,seed_file
+0762,China Unicom,HKEX,main_board,normal,True,True,seed_file
+0823,Link REIT,HKEX,main_board,normal,True,True,seed_file
+1928,Sands China,HKEX,main_board,normal,True,True,seed_file
+2015,Li Auto,HKEX,main_board,normal,True,True,seed_file
+1299,AIA,HKEX,main_board,normal,True,True,seed_file
+3988,Bank of China,HKEX,main_board,normal,True,True,seed_file
+3690,Meituan,HKEX,main_board,normal,True,True,seed_file
+1211,BYD,HKEX,main_board,normal,True,True,seed_file
+9888,Baidu,HKEX,main_board,normal,True,True,seed_file
+9999,NetEase,HKEX,main_board,normal,True,True,seed_file
+6618,JD Health,HKEX,main_board,normal,True,True,seed_file
+1024,Kuaishou,HKEX,main_board,normal,True,True,seed_file
+1093,CSPC Pharma,HKEX,main_board,normal,True,True,seed_file
+1177,Sino Biopharm,HKEX,main_board,normal,True,True,seed_file
+2269,WuXi Biologics,HKEX,main_board,normal,True,True,seed_file
+0960,Longfor Group,HKEX,main_board,normal,True,True,seed_file
+0002,CLP Holdings,HKEX,main_board,normal,True,True,seed_file
+0016,Sun Hung Kai,HKEX,main_board,normal,True,True,seed_file
+0011,Hang Seng Bank,HKEX,main_board,normal,True,True,seed_file
+0267,Citic,HKEX,main_board,normal,True,True,seed_file
+0291,China Resources Beer,HKEX,main_board,normal,True,True,seed_file
+0686,Beijing Energy,HKEX,main_board,normal,True,True,seed_file
+1038,CK Infrastructure,HKEX,main_board,normal,True,True,seed_file
+0175,Geely Auto,HKEX,main_board,normal,True,True,seed_file
+0285,BYD Electronic,HKEX,main_board,normal,True,True,seed_file
+2319,Mengniu Dairy,HKEX,main_board,normal,True,True,seed_file
+2007,Country Garden Services,HKEX,main_board,normal,True,True,seed_file
+1113,CK Asset,HKEX,main_board,normal,True,True,seed_file
+1209,China Resources Mixc,HKEX,main_board,normal,True,True,seed_file
+3328,Bank of Communications,HKEX,main_board,normal,True,True,seed_file
+3968,China Merchants Bank,HKEX,main_board,normal,True,True,seed_file
+9633,Nongfu Spring,HKEX,main_board,normal,True,True,seed_file
+6862,Haidilao,HKEX,main_board,normal,True,True,seed_file
+9618,JD Logistics,HKEX,main_board,normal,True,True,seed_file
+6690,Haitian International,HKEX,main_board,normal,True,True,seed_file
+3888,Kingsoft,HKEX,main_board,normal,True,True,seed_file
+0144,China Merchants Port,HKEX,main_board,normal,True,True,seed_file
+0012,Henderson Land,HKEX,main_board,normal,True,True,seed_file
+0066,MTR Corporation,HKEX,main_board,normal,True,True,seed_file
+0083,Sino Land,HKEX,main_board,normal,True,True,seed_file
+0101,Hang Lung Properties,HKEX,main_board,normal,True,True,seed_file
+0177,Jiangsu Expressway,HKEX,main_board,normal,True,True,seed_file
+0268,Kingdee International,HKEX,main_board,normal,True,True,seed_file
+0270,Guangdong Investment,HKEX,main_board,normal,True,True,seed_file
+0316,Orient Overseas Intl,HKEX,main_board,normal,True,True,seed_file
+0386,Sinopec Corp,HKEX,main_board,normal,True,True,seed_file
+0522,ASMPT,HKEX,main_board,normal,True,True,seed_file
+0551,Yue Yuen Industrial,HKEX,main_board,normal,True,True,seed_file
+0669,Techtronic Industries,HKEX,main_board,normal,True,True,seed_file
+0683,Kerry Properties,HKEX,main_board,normal,True,True,seed_file
+0763,ZTE HK,HKEX,main_board,normal,True,True,seed_file
+0857,PetroChina HK,HKEX,main_board,normal,True,True,seed_file
+0914,Anhui Conch Cement,HKEX,main_board,normal,True,True,seed_file
+0968,Xinyi Solar,HKEX,main_board,normal,True,True,seed_file
+0981,SMIC,HKEX,main_board,normal,True,True,seed_file
+1033,Sinopec SSC,HKEX,main_board,normal,True,True,seed_file
+1044,Hengan Intl,HKEX,main_board,normal,True,True,seed_file
+1088,China Shenhua HK,HKEX,main_board,normal,True,True,seed_file
+1114,Brilliance China,HKEX,main_board,normal,True,True,seed_file
+1211,BYD Company,HKEX,main_board,normal,True,True,seed_file
+1336,New China Life,HKEX,main_board,normal,True,True,seed_file
+1378,China Hongqiao,HKEX,main_board,normal,True,True,seed_file
+1398,ICBC HK,HKEX,main_board,normal,True,True,seed_file
+1772,Ganfeng Lithium HK,HKEX,main_board,normal,True,True,seed_file
+1876,Budweiser APAC,HKEX,main_board,normal,True,True,seed_file
+1997,Wharf REIC,HKEX,main_board,normal,True,True,seed_file
+2020,ANTA Sports,HKEX,main_board,normal,True,True,seed_file
+2313,Shenzhou Intl,HKEX,main_board,normal,True,True,seed_file
+2331,Li Ning,HKEX,main_board,normal,True,True,seed_file
+2382,Sunny Optical,HKEX,main_board,normal,True,True,seed_file
+2601,China Pacific Insurance HK,HKEX,main_board,normal,True,True,seed_file
+2628,China Life HK,HKEX,main_board,normal,True,True,seed_file
+2899,Zijin Mining HK,HKEX,main_board,normal,True,True,seed_file
+0003,0003,HKEX,main_board,normal,True,True,seed_file
+0017,0017,HKEX,main_board,normal,True,True,seed_file
+0019,0019,HKEX,main_board,normal,True,True,seed_file
+0023,0023,HKEX,main_board,normal,True,True,seed_file
+0027,0027,HKEX,main_board,normal,True,True,seed_file
+0068,0068,HKEX,main_board,normal,True,True,seed_file
+0142,0142,HKEX,main_board,normal,True,True,seed_file
+0151,0151,HKEX,main_board,normal,True,True,seed_file
+0177,0177,HKEX,main_board,normal,True,True,seed_file
+0220,0220,HKEX,main_board,normal,True,True,seed_file
+0241,0241,HKEX,main_board,normal,True,True,seed_file
+0268,0268,HKEX,main_board,normal,True,True,seed_file
+0285,0285,HKEX,main_board,normal,True,True,seed_file
+0293,0293,HKEX,main_board,normal,True,True,seed_file
+0322,0322,HKEX,main_board,normal,True,True,seed_file
+0384,0384,HKEX,main_board,normal,True,True,seed_file
+0392,0392,HKEX,main_board,normal,True,True,seed_file
+0525,0525,HKEX,main_board,normal,True,True,seed_file
+0535,0535,HKEX,main_board,normal,True,True,seed_file
+0570,0570,HKEX,main_board,normal,True,True,seed_file
+0604,0604,HKEX,main_board,normal,True,True,seed_file
+0688,0688,HKEX,main_board,normal,True,True,seed_file
+0708,0708,HKEX,main_board,normal,True,True,seed_file
+0728,0728,HKEX,main_board,normal,True,True,seed_file
+0753,0753,HKEX,main_board,normal,True,True,seed_file
+0788,0788,HKEX,main_board,normal,True,True,seed_file
+0868,0868,HKEX,main_board,normal,True,True,seed_file
+0902,0902,HKEX,main_board,normal,True,True,seed_file
+0916,0916,HKEX,main_board,normal,True,True,seed_file
+0966,0966,HKEX,main_board,normal,True,True,seed_file
+0992,0992,HKEX,main_board,normal,True,True,seed_file
+1029,1029,HKEX,main_board,normal,True,True,seed_file
+1099,1099,HKEX,main_board,normal,True,True,seed_file
+1171,1171,HKEX,main_board,normal,True,True,seed_file
+1193,1193,HKEX,main_board,normal,True,True,seed_file
+1313,1313,HKEX,main_board,normal,True,True,seed_file
+1776,1776,HKEX,main_board,normal,True,True,seed_file
+1801,1801,HKEX,main_board,normal,True,True,seed_file
+1816,1816,HKEX,main_board,normal,True,True,seed_file
+1833,1833,HKEX,main_board,normal,True,True,seed_file
+1919,1919,HKEX,main_board,normal,True,True,seed_file
+1972,1972,HKEX,main_board,normal,True,True,seed_file
+2202,2202,HKEX,main_board,normal,True,True,seed_file
+2328,2328,HKEX,main_board,normal,True,True,seed_file
+2688,2688,HKEX,main_board,normal,True,True,seed_file
+3323,3323,HKEX,main_board,normal,True,True,seed_file
+6030,6030,HKEX,main_board,normal,True,True,seed_file
+6060,6060,HKEX,main_board,normal,True,True,seed_file
+6098,6098,HKEX,main_board,normal,True,True,seed_file
+6618,6618,HKEX,main_board,normal,True,True,seed_file
+0004,0004,HKEX,main_board,normal,True,True,seed_file
+0006,0006,HKEX,main_board,normal,True,True,seed_file
+0014,0014,HKEX,main_board,normal,True,True,seed_file
+0020,0020,HKEX,main_board,normal,True,True,seed_file
+0025,0025,HKEX,main_board,normal,True,True,seed_file
+0041,0041,HKEX,main_board,normal,True,True,seed_file
+0045,0045,HKEX,main_board,normal,True,True,seed_file
+0054,0054,HKEX,main_board,normal,True,True,seed_file
+0087,0087,HKEX,main_board,normal,True,True,seed_file
+0107,0107,HKEX,main_board,normal,True,True,seed_file
+0123,0123,HKEX,main_board,normal,True,True,seed_file
+0135,0135,HKEX,main_board,normal,True,True,seed_file
+0148,0148,HKEX,main_board,normal,True,True,seed_file
+0175,0175,HKEX,main_board,normal,True,True,seed_file
+0189,0189,HKEX,main_board,normal,True,True,seed_file
+0247,0247,HKEX,main_board,normal,True,True,seed_file
+0266,0266,HKEX,main_board,normal,True,True,seed_file
+0288,0288,HKEX,main_board,normal,True,True,seed_file
+0358,0358,HKEX,main_board,normal,True,True,seed_file
+0384,0384,HKEX,main_board,normal,True,True,seed_file
+0390,0390,HKEX,main_board,normal,True,True,seed_file
+0425,0425,HKEX,main_board,normal,True,True,seed_file
+0460,0460,HKEX,main_board,normal,True,True,seed_file
+0494,0494,HKEX,main_board,normal,True,True,seed_file
+0552,0552,HKEX,main_board,normal,True,True,seed_file
+0576,0576,HKEX,main_board,normal,True,True,seed_file
+0586,0586,HKEX,main_board,normal,True,True,seed_file
+0616,0616,HKEX,main_board,normal,True,True,seed_file
+0636,0636,HKEX,main_board,normal,True,True,seed_file
+0656,0656,HKEX,main_board,normal,True,True,seed_file
+0680,0680,HKEX,main_board,normal,True,True,seed_file
+0697,0697,HKEX,main_board,normal,True,True,seed_file
+0728,0728,HKEX,main_board,normal,True,True,seed_file
+0754,0754,HKEX,main_board,normal,True,True,seed_file
+0766,0766,HKEX,main_board,normal,True,True,seed_file
+0772,0772,HKEX,main_board,normal,True,True,seed_file
+0836,0836,HKEX,main_board,normal,True,True,seed_file
+0881,0881,HKEX,main_board,normal,True,True,seed_file
+0906,0906,HKEX,main_board,normal,True,True,seed_file
+0917,0917,HKEX,main_board,normal,True,True,seed_file
+0956,0956,HKEX,main_board,normal,True,True,seed_file
+0991,0991,HKEX,main_board,normal,True,True,seed_file
+1030,1030,HKEX,main_board,normal,True,True,seed_file
+1055,1055,HKEX,main_board,normal,True,True,seed_file
+1066,1066,HKEX,main_board,normal,True,True,seed_file
+1071,1071,HKEX,main_board,normal,True,True,seed_file
+1098,1098,HKEX,main_board,normal,True,True,seed_file
+1177,1177,HKEX,main_board,normal,True,True,seed_file
+1199,1199,HKEX,main_board,normal,True,True,seed_file
+1288,1288,HKEX,main_board,normal,True,True,seed_file
+1399,1399,HKEX,main_board,normal,True,True,seed_file
+1658,1658,HKEX,main_board,normal,True,True,seed_file
+1766,1766,HKEX,main_board,normal,True,True,seed_file
+1777,1777,HKEX,main_board,normal,True,True,seed_file
+1787,1787,HKEX,main_board,normal,True,True,seed_file
+1818,1818,HKEX,main_board,normal,True,True,seed_file
+1836,1836,HKEX,main_board,normal,True,True,seed_file
+1883,1883,HKEX,main_board,normal,True,True,seed_file
+1898,1898,HKEX,main_board,normal,True,True,seed_file
+1899,1899,HKEX,main_board,normal,True,True,seed_file
+1918,1918,HKEX,main_board,normal,True,True,seed_file
+1929,1929,HKEX,main_board,normal,True,True,seed_file
+1988,1988,HKEX,main_board,normal,True,True,seed_file
+1999,1999,HKEX,main_board,normal,True,True,seed_file
+2018,2018,HKEX,main_board,normal,True,True,seed_file
+2196,2196,HKEX,main_board,normal,True,True,seed_file
+2222,2222,HKEX,main_board,normal,True,True,seed_file
+2238,2238,HKEX,main_board,normal,True,True,seed_file
+2269,2269,HKEX,main_board,normal,True,True,seed_file
+2309,2309,HKEX,main_board,normal,True,True,seed_file
+2319,2319,HKEX,main_board,normal,True,True,seed_file
+2333,2333,HKEX,main_board,normal,True,True,seed_file
+2359,2359,HKEX,main_board,normal,True,True,seed_file
+2600,2600,HKEX,main_board,normal,True,True,seed_file
+3320,3320,HKEX,main_board,normal,True,True,seed_file
+3606,3606,HKEX,main_board,normal,True,True,seed_file
+3799,3799,HKEX,main_board,normal,True,True,seed_file
+3886,3886,HKEX,main_board,normal,True,True,seed_file
+6808,6808,HKEX,main_board,normal,True,True,seed_file
+6865,6865,HKEX,main_board,normal,True,True,seed_file
+9618,9618,HKEX,main_board,normal,True,True,seed_file
+9626,9626,HKEX,main_board,normal,True,True,seed_file
+9866,9866,HKEX,main_board,normal,True,True,seed_file
+9888,9888,HKEX,main_board,normal,True,True,seed_file
+9961,9961,HKEX,main_board,normal,True,True,seed_file
+0034,0034,HKEX,main_board,normal,True,True,seed_file
+0052,0052,HKEX,main_board,normal,True,True,seed_file
+0069,0069,HKEX,main_board,normal,True,True,seed_file
+0081,0081,HKEX,main_board,normal,True,True,seed_file
+0108,0108,HKEX,main_board,normal,True,True,seed_file
+0119,0119,HKEX,main_board,normal,True,True,seed_file
+0173,0173,HKEX,main_board,normal,True,True,seed_file
+0216,0216,HKEX,main_board,normal,True,True,seed_file
+0272,0272,HKEX,main_board,normal,True,True,seed_file
+0286,0286,HKEX,main_board,normal,True,True,seed_file
+0330,0330,HKEX,main_board,normal,True,True,seed_file
+0354,0354,HKEX,main_board,normal,True,True,seed_file
+0398,0398,HKEX,main_board,normal,True,True,seed_file
+0682,0682,HKEX,main_board,normal,True,True,seed_file
+0694,0694,HKEX,main_board,normal,True,True,seed_file
+0751,0751,HKEX,main_board,normal,True,True,seed_file
+0777,0777,HKEX,main_board,normal,True,True,seed_file
+0839,0839,HKEX,main_board,normal,True,True,seed_file
+0863,0863,HKEX,main_board,normal,True,True,seed_file
+0958,0958,HKEX,main_board,normal,True,True,seed_file
+1024,1024,HKEX,main_board,normal,True,True,seed_file
+1318,1318,HKEX,main_board,normal,True,True,seed_file
+1515,1515,HKEX,main_board,normal,True,True,seed_file
+1812,1812,HKEX,main_board,normal,True,True,seed_file
+1913,1913,HKEX,main_board,normal,True,True,seed_file
+2190,2190,HKEX,main_board,normal,True,True,seed_file
+2314,2314,HKEX,main_board,normal,True,True,seed_file
+2858,2858,HKEX,main_board,normal,True,True,seed_file
+3328,3328,HKEX,main_board,normal,True,True,seed_file
+3668,3668,HKEX,main_board,normal,True,True,seed_file
+3968,3968,HKEX,main_board,normal,True,True,seed_file
+6098,6098,HKEX,main_board,normal,True,True,seed_file
+6690,6690,HKEX,main_board,normal,True,True,seed_file
+9618,9618,HKEX,main_board,normal,True,True,seed_file
+9698,9698,HKEX,main_board,normal,True,True,seed_file
+9888,9888,HKEX,main_board,normal,True,True,seed_file
